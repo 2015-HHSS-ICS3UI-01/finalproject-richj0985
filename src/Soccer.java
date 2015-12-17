@@ -27,12 +27,14 @@ public class Soccer extends JComponent implements KeyListener{
     long desiredTime = (1000)/desiredFPS;
     
     int playerX = 50;
+    int playerY = 440;
     int ballPosition = 370;
+    long airTime = System.currentTimeMillis() + 3000;
     
     boolean right = false;
     boolean left = false;
     boolean up = false;
-
+    
     
     // drawing of the game happens in here
     // we use the Graphics object, g, to perform the drawing
@@ -67,7 +69,7 @@ public class Soccer extends JComponent implements KeyListener{
         
         // player1
         g.setColor(Color.RED);
-        g.fillRect(playerX, 440, 60, 60);
+        g.fillRect(playerX, playerY, 60, 60);
         
         // ball
         g.setColor(Color.BLACK);
@@ -110,7 +112,13 @@ public class Soccer extends JComponent implements KeyListener{
             if(playerX + 60 == ballPosition || playerX == ballPosition + 40){
                 ballPosition = ballPosition + 2;
             }
-
+            
+            if(up){
+                playerY = playerY - 10;
+                if(airTime > System.currentTimeMillis()){
+                    playerY = playerY + 10;
+                }
+            }
             // GAME LOGIC ENDS HERE 
             
             // update the drawing (calls paintComponent)
@@ -171,7 +179,7 @@ public class Soccer extends JComponent implements KeyListener{
             right = true;
         }else if(key == KeyEvent.VK_LEFT){
             left = true;
-        } else if(key == KeyEvent.VK_UP){
+        }else if(key == KeyEvent.VK_UP){
             up = true;
         }
     }
@@ -183,6 +191,8 @@ public class Soccer extends JComponent implements KeyListener{
             right = false;
         }else if(key == KeyEvent.VK_LEFT){
             left = false;
+        }else if(key == KeyEvent.VK_UP){
+            up = false;
         }
     }
 }
