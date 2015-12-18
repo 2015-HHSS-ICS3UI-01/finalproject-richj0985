@@ -28,8 +28,13 @@ public class Soccer extends JComponent implements KeyListener{
     
     int playerX = 50;
     int playerY = 440;
-    int ballPosition = 370;
-    long airTime = System.currentTimeMillis() + 3000;
+    int dy = 0;
+    boolean jumping = false;
+    int gravity = 1;
+    
+    int ballPositionX = 370;
+    int ballPositionY = 460;
+    long airTime = 3000;
     
     boolean right = false;
     boolean left = false;
@@ -73,7 +78,7 @@ public class Soccer extends JComponent implements KeyListener{
         
         // ball
         g.setColor(Color.BLACK);
-        g.fillOval(ballPosition, 460, 40, 40);
+        g.fillOval(ballPositionX, ballPositionY, 40, 40);
         // GAME DRAWING ENDS HERE
     }
     
@@ -108,16 +113,31 @@ public class Soccer extends JComponent implements KeyListener{
                 playerX = playerX - 2;
             }
             
+            System.out.println("PY: " + playerY + "    BY: " + ballPositionY);
             // run with ball
-            if(playerX + 60 == ballPosition || playerX == ballPosition + 40){
-                ballPosition = ballPosition + 2;
+            if(playerY + 60 > ballPositionY){
+                if(playerX + 60 == ballPositionX){
+                    ballPositionX = ballPositionX + 2;
+                }else if(playerX == ballPositionX + 40){
+                    ballPositionX = ballPositionX - 2;
+                }
+                
+                ballPositionX = ballPositionX + 2;
             }
             
-            if(up){
-                playerY = playerY - 10;
-                if(airTime > System.currentTimeMillis()){
-                    playerY = playerY + 10;
-                }
+            if(up && !jumping){
+                dy = -20;
+                jumping = true;
+            }
+            
+            dy = dy + gravity;
+            if( dy > 20){
+                dy = 20;
+            }
+            playerY = playerY + dy;
+            if(playerY > 440){
+                playerY = 440;
+                jumping = false;
             }
             // GAME LOGIC ENDS HERE 
             
