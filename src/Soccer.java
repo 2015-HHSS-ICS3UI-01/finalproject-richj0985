@@ -112,8 +112,9 @@ public class Soccer extends JComponent implements KeyListener{
             if(left){
                 playerX = playerX - 2;
             }
-            
+            // test
             System.out.println("PY: " + playerY + "    BY: " + ballPositionY);
+            
             // run with ball
             if(playerY + 60 > ballPositionY){
                 if(playerX + 60 == ballPositionX){
@@ -121,15 +122,13 @@ public class Soccer extends JComponent implements KeyListener{
                 }else if(playerX == ballPositionX + 40){
                     ballPositionX = ballPositionX - 2;
                 }
-                
-                ballPositionX = ballPositionX + 2;
             }
             
+            // jumping
             if(up && !jumping){
                 dy = -20;
                 jumping = true;
             }
-            
             dy = dy + gravity;
             if( dy > 20){
                 dy = 20;
