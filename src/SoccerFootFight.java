@@ -13,6 +13,11 @@ import java.awt.Rectangle;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 
+import java.awt.Image;
+import java.awt.image.BufferedImage;
+import java.io.*;
+import javax.imageio.*;
+
 /**
  *
  * @author richj0985
@@ -54,11 +59,16 @@ public class SoccerFootFight extends JComponent implements KeyListener {
     // key count
     int keyDownCount = 0;
     int keyUpCount = 0;
+    int screen = 1;
+    
+    boolean menuUp = false;
+    boolean menuDown = false;
 
     // store variable for if a goal is being scored
     boolean score = false;
 
     public void initializeGame() {
+        if(screen == 2){
         // Initialize the players positions
         player2.playerNum = 2;
         player2.x = 50;
@@ -81,10 +91,12 @@ public class SoccerFootFight extends JComponent implements KeyListener {
         ball.y = FIELD_LEVEL;
         ball.width = 40;
         ball.height = 40;
-
+        }
     }
 
     public void drawPlayer(Graphics g, SoccerPlayer player) {
+        if(screen == 2){
+        
         // skin color
         Color whiteSkin = new Color(247, 238, 188);
 
@@ -144,6 +156,7 @@ public class SoccerFootFight extends JComponent implements KeyListener {
             g.setColor(Color.BLACK);
             g.drawLine(player.x + 40, player.y - 40 + 80, player.x + 40, player.y - 40 + 80);
         } else {
+            // layer 1
             g.setColor(Color.WHITE);
             g.fillOval(player.x + 15 - 14, player.y - 60 + 80, 20, 20);
             g.fillOval(player.x + 40 - 14, player.y - 60 + 80, 20, 20);
@@ -161,6 +174,7 @@ public class SoccerFootFight extends JComponent implements KeyListener {
             g.setColor(Color.BLACK);
             g.drawLine(player.x + 40 - 22, player.y - 40 + 80, player.x + 40 - 22, player.y - 40 + 80);
         }
+        }
     }
 
     // drawing of the game happens in here
@@ -172,6 +186,42 @@ public class SoccerFootFight extends JComponent implements KeyListener {
         g.clearRect(0, 0, WIDTH, HEIGHT);
 
         // GAME DRAWING GOES HERE
+        if(screen == 1){
+            
+//            BufferedImage img = null;
+//
+//            //  Load the background picture that Spongebob will be drawn on top of
+//            try {
+//                img = ImageIO.read( new File("") );
+//            } catch (IOException e) {
+//            }
+//
+//            g.drawImage(img, 0, 0, null);
+            
+            Font titleFont = new Font("Impact", Font.BOLD, 100);
+            g.setFont(titleFont);
+            g.setColor(Color.BLUE);
+            g.drawString("Soccer Foot Fight", WIDTH / 10, HEIGHT / 2 - 150);
+            
+            Font byFont = new Font("Times New Roman", Font.BOLD, 20);
+            g.setFont(byFont);
+            g.setColor(Color.BLACK);
+            g.drawString("JR Sports", WIDTH / 2 - 50, HEIGHT / 2 - 100);
+            
+            int menuSelection = 0;
+            
+            if(menuSelection == 0){
+                g.setColor(Color.RED);
+            } else{
+                g.setColor(Color.BLACK);
+            }
+            g.drawRect(WIDTH / 2 - 200, HEIGHT / 2 + menuSelection, 400, 50);
+            
+            Font playNowFont = new Font("Arial", Font.BOLD, 40);
+            g.setFont(playNowFont);
+            g.setColor(Color.RED);
+            g.drawString("PLAY NOW", WIDTH / 2 - 100, HEIGHT / 2 + 40);
+        }else if(screen == 2){
         // Colors
         // grass
         Color grass = new Color(22, 196, 16);
@@ -241,12 +291,13 @@ public class SoccerFootFight extends JComponent implements KeyListener {
         g.setFont(scoreFont);
         g.setColor(Color.RED);
         g.drawString("CANADA: " + player2.score, WIDTH / 2 - 350, 40);
-
+        }
         // GAME DRAWING ENDS HERE
     }
 
     public void movePlayer(SoccerPlayer player, SoccerBall ball) {
         
+        if(screen == 2){
         // player collides with player
         if (player1.intersects(player2) && (player1.y + 60 >= player2.y && player2.y + 60 >= player1.y)) {
             if (player1.x > player2.x) {
@@ -400,11 +451,11 @@ public class SoccerFootFight extends JComponent implements KeyListener {
             player.foot1Y = 0;
             player.foot2Y = 0;
         }
-
+        }
     }
 
     public void moveBall(SoccerBall ball) {
-        
+        if(screen == 2){
         // use variable to represent the drag from the ball to the ground
         int drag;
 
@@ -476,6 +527,7 @@ public class SoccerFootFight extends JComponent implements KeyListener {
             score = true;
         } else if (!ball.intersects(net1) && !ball.intersects(net2)) {
             score = false;
+        }
         }
     }
 
@@ -561,13 +613,14 @@ public class SoccerFootFight extends JComponent implements KeyListener {
     public void keyPressed(KeyEvent e) {
         keyDownCount++;
         int key = e.getKeyCode();
-
+        
         if (key == KeyEvent.VK_RIGHT) {
             player1.right = true;
         } else if (key == KeyEvent.VK_LEFT) {
             player1.left = true;
         } else if (key == KeyEvent.VK_UP) {
             player1.jump = true;
+            menuUp = true;
         } else if (key == KeyEvent.VK_SPACE) {
             player1.kick = true;
         } else if (key == KeyEvent.VK_A) {
@@ -578,6 +631,8 @@ public class SoccerFootFight extends JComponent implements KeyListener {
             player2.jump = true;
         } else if (key == KeyEvent.VK_SHIFT) {
             player2.kick = true;
+        } else if (key == KeyEvent.VK_DOWN){
+            menuDown = true;
         }
     }
 
@@ -591,6 +646,7 @@ public class SoccerFootFight extends JComponent implements KeyListener {
             player1.left = false;
         } else if (key == KeyEvent.VK_UP) {
             player1.jump = false;
+            menuDown = false;
         } else if (key == KeyEvent.VK_SPACE) {
             player1.kick = false;
         } else if (key == KeyEvent.VK_A) {
@@ -601,6 +657,8 @@ public class SoccerFootFight extends JComponent implements KeyListener {
             player2.jump = false;
         } else if (key == KeyEvent.VK_SHIFT) {
             player2.kick = false;
+        } else if(key == KeyEvent.VK_DOWN){
+            menuDown = false;
         }
     }
 }
