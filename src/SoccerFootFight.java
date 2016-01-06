@@ -64,6 +64,7 @@ public class SoccerFootFight extends JComponent implements KeyListener {
     boolean menuUp = false;
     boolean menuDown = false;
     boolean menuEnter = false;
+    boolean menuChange = false;
 
     // store variable for if a goal is being scored
     boolean score = false;
@@ -187,9 +188,9 @@ public class SoccerFootFight extends JComponent implements KeyListener {
             
 //            BufferedImage img = null;
 //
-//            //  Load the background picture that Spongebob will be drawn on top of
+//            //  Load the background picture
 //            try {
-//                img = ImageIO.read( new File("") );
+//                img = ImageIO.read( new File("soccer game home screen.jpg") );
 //            } catch (IOException e) {
 //            }
 //
@@ -226,10 +227,12 @@ public class SoccerFootFight extends JComponent implements KeyListener {
             }
             g.drawString("INSTRUCTIONS", WIDTH / 2 - 100 - 50, HEIGHT / 2 + 40 + 60 + 60);
             
-            if(menuUp && redBoxX != HEIGHT / 2){
+            if(menuUp && !menuChange && redBoxX != HEIGHT / 2){
                 redBoxX = redBoxX - 60;
-            } else if(menuDown && redBoxX != HEIGHT / 2 + 60 + 60){
+                menuChange = true;
+            } else if(menuDown && !menuChange && redBoxX != HEIGHT / 2 + 60 + 60){
                 redBoxX = redBoxX + 60;
+                menuChange = true;
             }
             
             g.setColor(Color.BLACK);
@@ -669,6 +672,7 @@ public class SoccerFootFight extends JComponent implements KeyListener {
         } else if (key == KeyEvent.VK_UP) {
             player1.jump = false;
             menuUp = false;
+            menuChange = false;
         } else if (key == KeyEvent.VK_SPACE) {
             player1.kick = false;
             menuEnter = false;
@@ -682,6 +686,7 @@ public class SoccerFootFight extends JComponent implements KeyListener {
             player2.kick = false;
         } else if(key == KeyEvent.VK_DOWN){
             menuDown = false;
+            menuChange = false;
         }
     }
 }
