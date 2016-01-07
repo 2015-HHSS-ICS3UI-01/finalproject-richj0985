@@ -28,49 +28,52 @@ public class SoccerFootFight extends JComponent implements KeyListener {
     static final int WIDTH = 800 + 200;
     static final int HEIGHT = 600;
     static final int FIELD_LEVEL = 460;
-    
     // Ball travel speeds
-    static final int BALL_GRAVITY       = 1;
-    static final int BALL_SPEED         = 10;
+    static final int BALL_GRAVITY = 1;
+    static final int BALL_SPEED = 10;
     static final int BALL_DY_MULTIPLIER = 2;
 //    static final int BALL_GRAVITY       = 3;
 //    static final int BALL_SPEED         = 15;
 //    static final int BALL_DY_MULTIPLIER = 3;
-    
-
     // sets the framerate and delay for our game
     // you just need to select an approproate framerate
     long desiredFPS = 60;
     long desiredTime = (1000) / desiredFPS;
-
+    BufferedImage img = loadImage("soocer game home screen2.jpg");
     // soccer ball
     SoccerBall ball = new SoccerBall();
-
     // players
     SoccerPlayer player1 = new SoccerPlayer();
     SoccerPlayer player2 = new SoccerPlayer();
-
     // nets
     Rectangle net1 = new Rectangle(0, 300, 40, 200);
     Rectangle net2 = new Rectangle(760 + 200, 300, 40, 200);
     Rectangle crossBar1 = new Rectangle(0, 300, 40, 4);
     Rectangle crossBar2 = new Rectangle(760 + 200, 300, 40, 4);
-
     // key count
     int keyDownCount = 0;
     int keyUpCount = 0;
     int screen = 1;
-    
     boolean menuUp = false;
     boolean menuDown = false;
     boolean menuEnter = false;
     boolean menuChange = false;
-
     // store variable for if a goal is being scored
     boolean score = false;
-    
     int redBoxX = HEIGHT / 2;
-    
+
+  
+
+    public BufferedImage loadImage(String file) {
+        BufferedImage img = null;
+        try {
+            img = ImageIO.read(new File(file));
+        } catch (IOException e) {
+            System.out.println("bad file");
+        }
+        return img;
+    }
+
     public void initializeGame() {
         // Initialize the players positions
         player2.playerNum = 2;
@@ -96,7 +99,7 @@ public class SoccerFootFight extends JComponent implements KeyListener {
         ball.height = 40;
     }
 
-    public void drawPlayer(Graphics g, SoccerPlayer player) {      
+    public void drawPlayer(Graphics g, SoccerPlayer player) {
         // skin color
         Color whiteSkin = new Color(247, 238, 188);
 
@@ -178,150 +181,145 @@ public class SoccerFootFight extends JComponent implements KeyListener {
     // drawing of the game happens in here
     // we use the Graphics object, g, to perform the drawing
     // NOTE: This is already double buffered!(helps with framerate/speed)
+
     @Override
     public void paintComponent(Graphics g) {
         // always clear the screen first!
         g.clearRect(0, 0, WIDTH, HEIGHT);
 
         // GAME DRAWING GOES HERE
-        if(screen == 1){
-            
-//            BufferedImage img = null;
-//
-//            //  Load the background picture
-//            try {
-//                img = ImageIO.read( new File("soccer game home screen.jpg") );
-//            } catch (IOException e) {
-//            }
-//
-//            g.drawImage(img, 0, 0, null);
-            
+        if (screen == 1) {
+
+
+
+            g.drawImage(img, 0, 0, null);
+
             Font titleFont = new Font("Impact", Font.BOLD, 100);
             g.setFont(titleFont);
             g.setColor(Color.BLUE);
             g.drawString("Soccer Foot Fight", WIDTH / 10, HEIGHT / 2 - 150);
-            
+
             Font byFont = new Font("Times New Roman", Font.BOLD, 20);
             g.setFont(byFont);
             g.setColor(Color.BLACK);
             g.drawString("JR Sports", WIDTH / 2 - 50, HEIGHT / 2 - 100);
-            
+
             Font tabs = new Font("Arial", Font.BOLD, 40);
             g.setFont(tabs);
-            if(redBoxX == HEIGHT / 2){
+            if (redBoxX == HEIGHT / 2) {
                 g.setColor(Color.BLACK);
-            }else{
+            } else {
                 g.setColor(Color.RED);
             }
             g.drawString("PLAY NOW", WIDTH / 2 - 100, HEIGHT / 2 + 40);
-            if(redBoxX == HEIGHT / 2 + 60){
+            if (redBoxX == HEIGHT / 2 + 60) {
                 g.setColor(Color.BLACK);
-            }else{
+            } else {
                 g.setColor(Color.RED);
             }
             g.drawString("CONTROLS", WIDTH / 2 - 100 - 10, HEIGHT / 2 + 40 + 60);
-            if(redBoxX == HEIGHT / 2 + 60 + 60){
+            if (redBoxX == HEIGHT / 2 + 60 + 60) {
                 g.setColor(Color.BLACK);
-            }else{
+            } else {
                 g.setColor(Color.RED);
             }
             g.drawString("INSTRUCTIONS", WIDTH / 2 - 100 - 50, HEIGHT / 2 + 40 + 60 + 60);
-            
-            if(menuUp && !menuChange && redBoxX != HEIGHT / 2){
+
+            if (menuUp && !menuChange && redBoxX != HEIGHT / 2) {
                 redBoxX = redBoxX - 60;
                 menuChange = true;
-            } else if(menuDown && !menuChange && redBoxX != HEIGHT / 2 + 60 + 60){
+            } else if (menuDown && !menuChange && redBoxX != HEIGHT / 2 + 60 + 60) {
                 redBoxX = redBoxX + 60;
                 menuChange = true;
             }
-            
+
             g.setColor(Color.BLACK);
             g.drawRect(WIDTH / 2 - 200, HEIGHT / 2, 400, 50);
-            
+
             g.drawRect(WIDTH / 2 - 200, HEIGHT / 2 + 60, 400, 50);
-            
+
             g.drawRect(WIDTH / 2 - 200, HEIGHT / 2 + 60 + 60, 400, 50);
-            
+
             g.setColor(Color.RED);
             g.drawRect(WIDTH / 2 - 200, redBoxX, 400, 50);
-            
-            if(redBoxX == HEIGHT / 2 && menuEnter){
+
+            if (redBoxX == HEIGHT / 2 && menuEnter) {
                 screen = 2;
             }
-        }else if(screen == 2){
-        // Colors
-        // grass
-        Color grass = new Color(22, 196, 16);
+        } else if (screen == 2) {
+            // Colors
+            // grass
+            Color grass = new Color(22, 196, 16);
 
-        // sky
-        Color sky = new Color(175, 240, 236);
+            // sky
+            Color sky = new Color(175, 240, 236);
 
-        // sky
-        g.setColor(sky);
-        g.fillRect(0, 0, 800 + 200, 600);
+            // sky
+            g.setColor(sky);
+            g.fillRect(0, 0, 800 + 200, 600);
 
-        // soccer field
-        g.setColor(grass);
-        g.fillRect(0, 400, 800 + 200, 200);
+            // soccer field
+            g.setColor(grass);
+            g.fillRect(0, 400, 800 + 200, 200);
 
-        // detail on field
-        g.setColor(Color.WHITE);
-        g.fillRect(WIDTH / 2 - 20, 400, 20, 200);
-        g.drawOval(365 + 100, 475, 50, 50);
+            // detail on field
+            g.setColor(Color.WHITE);
+            g.fillRect(WIDTH / 2 - 20, 400, 20, 200);
+            g.drawOval(365 + 100, 475, 50, 50);
 
-        // ball
-        g.setColor(Color.BLACK);
-        g.fillOval(ball.x, ball.y, ball.width, ball.height);
-        g.setColor(Color.WHITE);
-        g.fillOval(ball.x + 1, ball.y + 1, ball.width - 2, ball.height - 2);
+            // ball
+            g.setColor(Color.BLACK);
+            g.fillOval(ball.x, ball.y, ball.width, ball.height);
+            g.setColor(Color.WHITE);
+            g.fillOval(ball.x + 1, ball.y + 1, ball.width - 2, ball.height - 2);
 
-        // draw both nets
-        g.setColor(Color.WHITE);
-        for (int index = 1; index <= 4; index = index + 1) {
-            g.drawLine(net1.x + index, net1.y, net1.x + index, net1.y + 200);
-            g.drawLine(net1.x + index + net1.width - 4, net1.y, net1.x + index + net1.width - 4, net1.y + 200);
-            g.drawLine(net2.x + index, net2.y, net2.x + index, net2.y + 200);
-            g.drawLine(net2.x + index + net2.width - 4, net2.y, net2.x + index + net2.width - 4, net2.y + 200);
-        }
-        for (int index = 1; index <= 4; index = index + 1) {
-            g.drawLine(net1.x, net1.y + index, net1.x + net1.width, net1.y + index);
-            g.drawLine(net1.x, net1.y + index + net1.height - 4, net1.x + net1.width, net1.y + index + net1.height - 4);
-            g.drawLine(net2.x, net2.y + index, net2.x + net2.width, net2.y + index);
-            g.drawLine(net2.x, net2.y + index + net1.height - 4, net2.x + net2.width, net2.y + index + net1.height - 4);
-        }
-        for (int index = 0; index <= net1.width; index = index + 10) {
-            g.drawLine(net1.x + index, net1.y, net1.x + index, net1.y + 200);
-            g.drawLine(net2.x + index, net2.y, net2.x + index, net2.y + 200);
-        }
-        for (int index = 0; index <= net1.height; index = index + 10) {
-            g.drawLine(net1.x, net1.y + index, net1.x + net1.width, net1.y + index);
-            g.drawLine(net2.x, net2.y + index, net2.x + net2.width, net2.y + index);
-        }
+            // draw both nets
+            g.setColor(Color.WHITE);
+            for (int index = 1; index <= 4; index = index + 1) {
+                g.drawLine(net1.x + index, net1.y, net1.x + index, net1.y + 200);
+                g.drawLine(net1.x + index + net1.width - 4, net1.y, net1.x + index + net1.width - 4, net1.y + 200);
+                g.drawLine(net2.x + index, net2.y, net2.x + index, net2.y + 200);
+                g.drawLine(net2.x + index + net2.width - 4, net2.y, net2.x + index + net2.width - 4, net2.y + 200);
+            }
+            for (int index = 1; index <= 4; index = index + 1) {
+                g.drawLine(net1.x, net1.y + index, net1.x + net1.width, net1.y + index);
+                g.drawLine(net1.x, net1.y + index + net1.height - 4, net1.x + net1.width, net1.y + index + net1.height - 4);
+                g.drawLine(net2.x, net2.y + index, net2.x + net2.width, net2.y + index);
+                g.drawLine(net2.x, net2.y + index + net1.height - 4, net2.x + net2.width, net2.y + index + net1.height - 4);
+            }
+            for (int index = 0; index <= net1.width; index = index + 10) {
+                g.drawLine(net1.x + index, net1.y, net1.x + index, net1.y + 200);
+                g.drawLine(net2.x + index, net2.y, net2.x + index, net2.y + 200);
+            }
+            for (int index = 0; index <= net1.height; index = index + 10) {
+                g.drawLine(net1.x, net1.y + index, net1.x + net1.width, net1.y + index);
+                g.drawLine(net2.x, net2.y + index, net2.x + net2.width, net2.y + index);
+            }
 
-        // draw the player
-        drawPlayer(g, player1);
-        drawPlayer(g, player2);
+            // draw the player
+            drawPlayer(g, player1);
+            drawPlayer(g, player2);
 
-        // scoreboard
-        g.setColor(Color.LIGHT_GRAY);
-        g.fillRect(WIDTH / 2 - 400, 0, 800, 60);
-        g.setColor(Color.BLACK);
-        g.drawRect(WIDTH / 2 - 400, 0, 800, 60);
+            // scoreboard
+            g.setColor(Color.LIGHT_GRAY);
+            g.fillRect(WIDTH / 2 - 400, 0, 800, 60);
+            g.setColor(Color.BLACK);
+            g.drawRect(WIDTH / 2 - 400, 0, 800, 60);
 
-        Font scoreFont = new Font("Impact", Font.BOLD, 40);
-        g.setFont(scoreFont);
-        g.setColor(Color.BLACK);
-        g.drawString("Soccer Foot Fight", WIDTH / 2 - 150, 40);
-        g.setFont(scoreFont);
-        g.setColor(Color.BLUE);
-        g.drawString("USA: " + player1.score, WIDTH / 2 + 200, 40);
-        g.setFont(scoreFont);
-        g.setColor(Color.RED);
-        g.drawString("CANADA: " + player2.score, WIDTH / 2 - 350, 40);
+            Font scoreFont = new Font("Impact", Font.BOLD, 40);
+            g.setFont(scoreFont);
+            g.setColor(Color.BLACK);
+            g.drawString("Soccer Foot Fight", WIDTH / 2 - 150, 40);
+            g.setFont(scoreFont);
+            g.setColor(Color.BLUE);
+            g.drawString("USA: " + player1.score, WIDTH / 2 + 200, 40);
+            g.setFont(scoreFont);
+            g.setColor(Color.RED);
+            g.drawString("CANADA: " + player2.score, WIDTH / 2 - 350, 40);
         }
         // GAME DRAWING ENDS HERE
     }
-    
+
     public void movePlayer(SoccerPlayer player, SoccerBall ball) {
         // player collides with player
         if (player1.intersects(player2) && (player1.y + 60 >= player2.y && player2.y + 60 >= player1.y)) {
@@ -333,7 +331,7 @@ public class SoccerFootFight extends JComponent implements KeyListener {
                 player2.left = false;
             }
         }
-        
+
         // moving
         // turn right
         if (player.right) {
@@ -351,14 +349,14 @@ public class SoccerFootFight extends JComponent implements KeyListener {
         } else {
             player.footRun2 = 0;
         }
-        
+
         // player collides with wall - boundaries - (ensure player is not allowed to move off the field)
         if (player.x <= 0) {
             player.x = 0;
         } else if (player.x + 60 >= WIDTH) {
             player.x = WIDTH - 60;
         }
-        
+
         // jumping
         if (player.jump && !player.jumping) {
             player.dy = -18;
@@ -378,7 +376,7 @@ public class SoccerFootFight extends JComponent implements KeyListener {
         } else {
             player.feetJump = 0;
         }
-        
+
         // player collides with ball        
         // check to see if the player and ball are hitting each other   
         if (player.intersects(ball)) {
@@ -393,9 +391,9 @@ public class SoccerFootFight extends JComponent implements KeyListener {
 //            playersHead.height     = player.height / 4;
             // set the balls X direction based on side the player the ball hit
             Rectangle playersLeftSide = new Rectangle();
-            playersLeftSide.x      = player.x;
-            playersLeftSide.y      = player.y;
-            playersLeftSide.width  = player.width / 3;
+            playersLeftSide.x = player.x;
+            playersLeftSide.y = player.y;
+            playersLeftSide.width = player.width / 3;
             playersLeftSide.height = player.height / 3;
             // Set the ball direction based on where th ball hits the player on the head
             if (playersLeftSide.intersects(ball)) {
@@ -411,7 +409,7 @@ public class SoccerFootFight extends JComponent implements KeyListener {
                 // check to see if the ball is traveling left and if it is then change it's direction
                 // if hit left side and ball is traveling right then change it's direction
                 if (ball.speed < 0) {
-                    
+
                     ball.speed *= -1;
                     // increase the ball speed due to conflict
                     ball.speed += 1;
@@ -476,82 +474,82 @@ public class SoccerFootFight extends JComponent implements KeyListener {
             player.foot1Y = 0;
             player.foot2Y = 0;
         }
-        }
+    }
 
     public void moveBall(SoccerBall ball) {
-        if(screen == 2){
-        // use variable to represent the drag from the ball to the ground
-        int drag;
+        if (screen == 2) {
+            // use variable to represent the drag from the ball to the ground
+            int drag;
 
-        // move the ball and apply both gravity to ball height
-        // and apply a "drag" to the ball speed. 
-        ball.x = ball.x + ball.speed;
-        ball.y = ball.y - ball.dy + ball.gravity;
-        // accumulate the gravity on the ball's flight
-        ball.gravity = ball.gravity + BALL_GRAVITY;
+            // move the ball and apply both gravity to ball height
+            // and apply a "drag" to the ball speed. 
+            ball.x = ball.x + ball.speed;
+            ball.y = ball.y - ball.dy + ball.gravity;
+            // accumulate the gravity on the ball's flight
+            ball.gravity = ball.gravity + BALL_GRAVITY;
 
-        // bounce the ball off the field surface
-        // reduce the bounce height of the ball each time it hits the ground
-        if (ball.y >= FIELD_LEVEL) {
-            ball.y = FIELD_LEVEL;
-            // reduce the size of the bounce by 40%
-            // set gravity strength back to zero to allow the ball to begin to 
-            // bounce up. 
-            ball.dy -= (float) ball.dy * .20;
-            ball.gravity = 0;
-        }
+            // bounce the ball off the field surface
+            // reduce the bounce height of the ball each time it hits the ground
+            if (ball.y >= FIELD_LEVEL) {
+                ball.y = FIELD_LEVEL;
+                // reduce the size of the bounce by 40%
+                // set gravity strength back to zero to allow the ball to begin to 
+                // bounce up. 
+                ball.dy -= (float) ball.dy * .20;
+                ball.gravity = 0;
+            }
 
-        // if the ball moving and is rolling on the ground, apply some drag to the ball speed
-        if (ball.speed != 0 && ball.y >= FIELD_LEVEL) {
-            // reduce the ball speed by 33% each frame
-            drag = ball.speed / 5;
-            // ensure we apply a drag value
-            if (drag == 0) {
-                if (ball.speed > 0) {
-                    drag = 1;
+            // if the ball moving and is rolling on the ground, apply some drag to the ball speed
+            if (ball.speed != 0 && ball.y >= FIELD_LEVEL) {
+                // reduce the ball speed by 33% each frame
+                drag = ball.speed / 5;
+                // ensure we apply a drag value
+                if (drag == 0) {
+                    if (ball.speed > 0) {
+                        drag = 1;
+                    } else {
+                        drag = -1;
+                    }
+                }
+                ball.speed = ball.speed - drag;
+            }
+
+            // check the ball against the field boundaries   If the ball hits the edge of 
+            // the field then change it's direction and take 50% of it's speed away 
+            if (ball.x < 0) {
+                ball.x = 0;
+                ball.speed = ball.speed / 2 * -1;
+            } else if (ball.x > WIDTH - 40) {
+                ball.speed = ball.speed / 2 * -1;
+                ball.x = WIDTH - 40;
+            }
+
+            // ball collides with the cross bar of the net
+            if (ball.intersects(crossBar1) || ball.intersects(crossBar2)) {
+                ball.gravity = 0;
+                if (ball.intersects(crossBar1)) {
+                    if (ball.speed < 0) {
+                        ball.speed *= -1;
+                        ball.speed += 1;
+                    }
                 } else {
-                    drag = -1;
+                    if (ball.speed > 0) {
+                        ball.speed *= -1;
+                        ball.speed -= 1;
+                    }
                 }
             }
-            ball.speed = ball.speed - drag;
-        }
 
-        // check the ball against the field boundaries   If the ball hits the edge of 
-        // the field then change it's direction and take 50% of it's speed away 
-        if (ball.x < 0) {
-            ball.x = 0;
-            ball.speed = ball.speed / 2 * -1;
-        } else if (ball.x > WIDTH - 40) {
-            ball.speed = ball.speed / 2 * -1;
-            ball.x = WIDTH - 40;
-        }
-        
-        // ball collides with the cross bar of the net
-        if(ball.intersects(crossBar1) || ball.intersects(crossBar2)) {
-            ball.gravity = 0;
-            if(ball.intersects(crossBar1)){
-                if (ball.speed < 0) {
-                    ball.speed *= -1;
-                    ball.speed += 1;
-                }
-            }else{
-                if (ball.speed > 0) {
-                    ball.speed *= -1;
-                    ball.speed -= 1;
-                }
+            // ball is scored
+            if (score == false && ball.intersects(net1) && !ball.intersects(crossBar1)) {
+                player1.score = player1.score + 1;
+                score = true;
+            } else if (score == false && ball.intersects(net2) && !ball.intersects(crossBar2)) {
+                player2.score = player2.score + 1;
+                score = true;
+            } else if (!ball.intersects(net1) && !ball.intersects(net2)) {
+                score = false;
             }
-        }
-        
-        // ball is scored
-        if (score == false && ball.intersects(net1) && !ball.intersects(crossBar1)) {
-            player1.score = player1.score + 1;
-            score = true;
-        } else if (score == false && ball.intersects(net2) && !ball.intersects(crossBar2)) {
-            player2.score = player2.score + 1;
-            score = true;
-        } else if (!ball.intersects(net1) && !ball.intersects(net2)) {
-            score = false;
-        }
         }
     }
 
@@ -562,7 +560,7 @@ public class SoccerFootFight extends JComponent implements KeyListener {
         // This is used to limit the framerate later on
         long startTime;
         long deltaTime;
-        
+
         // Initialize the goal objects of the game
         initializeGame();
         // the main game loop section
@@ -575,7 +573,7 @@ public class SoccerFootFight extends JComponent implements KeyListener {
             // all your game rules and move is done in here
             // GAME LOGIC STARTS HERE 
             // move players in game
-            if(screen == 2){
+            if (screen == 2) {
                 movePlayer(player1, ball);
                 movePlayer(player2, ball);
 
@@ -630,14 +628,13 @@ public class SoccerFootFight extends JComponent implements KeyListener {
 
     @Override
     public void keyTyped(KeyEvent e) {
-
     }
 
     @Override
     public void keyPressed(KeyEvent e) {
         keyDownCount++;
         int key = e.getKeyCode();
-        
+
         if (key == KeyEvent.VK_RIGHT) {
             player1.right = true;
         } else if (key == KeyEvent.VK_LEFT) {
@@ -656,7 +653,7 @@ public class SoccerFootFight extends JComponent implements KeyListener {
             player2.jump = true;
         } else if (key == KeyEvent.VK_SHIFT) {
             player2.kick = true;
-        } else if (key == KeyEvent.VK_DOWN){
+        } else if (key == KeyEvent.VK_DOWN) {
             menuDown = true;
         }
     }
@@ -684,7 +681,7 @@ public class SoccerFootFight extends JComponent implements KeyListener {
             player2.jump = false;
         } else if (key == KeyEvent.VK_SHIFT) {
             player2.kick = false;
-        } else if(key == KeyEvent.VK_DOWN){
+        } else if (key == KeyEvent.VK_DOWN) {
             menuDown = false;
             menuChange = false;
         }
