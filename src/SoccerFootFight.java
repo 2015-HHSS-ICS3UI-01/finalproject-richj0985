@@ -39,7 +39,10 @@ public class SoccerFootFight extends JComponent implements KeyListener {
     // you just need to select an approproate framerate
     long desiredFPS = 60;
     long desiredTime = (1000) / desiredFPS;
-    BufferedImage img = loadImage("soocer game home screen2.jpg");
+    BufferedImage img1 = loadImage("soccer game home screen.jpg");
+    BufferedImage img2 = loadImage("soccer game home screen2.jpg");
+    BufferedImage img3 = loadImage("controls1.jpg");
+    BufferedImage img4 = loadImage("space-bar1.jpg");
     // soccer ball
     SoccerBall ball = new SoccerBall();
     // players
@@ -58,6 +61,8 @@ public class SoccerFootFight extends JComponent implements KeyListener {
     boolean menuDown = false;
     boolean menuEnter = false;
     boolean menuChange = false;
+    boolean menuLeft = false;
+    boolean menuRight = false;
     // store variable for if a goal is being scored
     boolean score = false;
     int redBoxX = HEIGHT / 2;
@@ -192,7 +197,7 @@ public class SoccerFootFight extends JComponent implements KeyListener {
 
 
 
-            g.drawImage(img, 0, 0, null);
+            g.drawImage(img1, 0, 0, null);
 
             Font titleFont = new Font("Impact", Font.BOLD, 100);
             g.setFont(titleFont);
@@ -203,23 +208,33 @@ public class SoccerFootFight extends JComponent implements KeyListener {
             g.setFont(byFont);
             g.setColor(Color.BLACK);
             g.drawString("JR Sports", WIDTH / 2 - 50, HEIGHT / 2 - 100);
+            
+            g.setColor(Color.WHITE);
+            g.fillRect(WIDTH / 2 - 200, HEIGHT / 2, 400, 50);
 
+            g.fillRect(WIDTH / 2 - 200, HEIGHT / 2 + 60, 400, 50);
+
+            g.fillRect(WIDTH / 2 - 200, HEIGHT / 2 + 60 + 60, 400, 50);
+
+            g.setColor(Color.RED);
+            g.fillRect(WIDTH / 2 - 200, redBoxX, 400, 50);
+            
             Font tabs = new Font("Arial", Font.BOLD, 40);
             g.setFont(tabs);
             if (redBoxX == HEIGHT / 2) {
-                g.setColor(Color.BLACK);
+                g.setColor(Color.WHITE);
             } else {
                 g.setColor(Color.RED);
             }
             g.drawString("PLAY NOW", WIDTH / 2 - 100, HEIGHT / 2 + 40);
             if (redBoxX == HEIGHT / 2 + 60) {
-                g.setColor(Color.BLACK);
+                g.setColor(Color.WHITE);
             } else {
                 g.setColor(Color.RED);
             }
             g.drawString("CONTROLS", WIDTH / 2 - 100 - 10, HEIGHT / 2 + 40 + 60);
             if (redBoxX == HEIGHT / 2 + 60 + 60) {
-                g.setColor(Color.BLACK);
+                g.setColor(Color.WHITE);
             } else {
                 g.setColor(Color.RED);
             }
@@ -233,18 +248,12 @@ public class SoccerFootFight extends JComponent implements KeyListener {
                 menuChange = true;
             }
 
-            g.setColor(Color.BLACK);
-            g.drawRect(WIDTH / 2 - 200, HEIGHT / 2, 400, 50);
-
-            g.drawRect(WIDTH / 2 - 200, HEIGHT / 2 + 60, 400, 50);
-
-            g.drawRect(WIDTH / 2 - 200, HEIGHT / 2 + 60 + 60, 400, 50);
-
-            g.setColor(Color.RED);
-            g.drawRect(WIDTH / 2 - 200, redBoxX, 400, 50);
-
             if (redBoxX == HEIGHT / 2 && menuEnter) {
                 screen = 2;
+            }else if(redBoxX == HEIGHT / 2 + 60 && menuEnter){
+                screen = 3;
+            }else if(redBoxX == HEIGHT / 2 + 60 + 60 && menuEnter){
+                screen = 4;
             }
         } else if (screen == 2) {
             // Colors
@@ -316,6 +325,25 @@ public class SoccerFootFight extends JComponent implements KeyListener {
             g.setFont(scoreFont);
             g.setColor(Color.RED);
             g.drawString("CANADA: " + player2.score, WIDTH / 2 - 350, 40);
+        } else if(screen == 3){
+            g.drawImage(img2, 0, 0, null);
+            Font title = new Font("Arial", Font.BOLD, 40);
+            g.setFont(title);
+            g.setColor(Color.WHITE);
+            g.drawString("Controls:", WIDTH / 2 - 500, 40);
+            
+            Font player1 = new Font("Arial", Font.BOLD, 30);
+            g.setFont(player1);
+            g.setColor(Color.BLUE);
+            g.drawString("Player 1:", WIDTH / 2 - 500 + 100, 175);
+            g.drawImage(img3, 100, 200, null);
+            g.drawImage(img4, 100, 400, null);
+        } else if(screen == 4){
+            g.drawImage(img2, 0, 0, null);
+            Font title2 = new Font("Arial", Font.BOLD, 40);
+            g.setFont(title2);
+            g.setColor(Color.WHITE);
+            g.drawString("Instructions:", WIDTH / 2 - 500, 40);
         }
         // GAME DRAWING ENDS HERE
     }
@@ -637,8 +665,10 @@ public class SoccerFootFight extends JComponent implements KeyListener {
 
         if (key == KeyEvent.VK_RIGHT) {
             player1.right = true;
+            menuRight = true;
         } else if (key == KeyEvent.VK_LEFT) {
             player1.left = true;
+            menuLeft = false;
         } else if (key == KeyEvent.VK_UP) {
             player1.jump = true;
             menuUp = true;
@@ -664,8 +694,10 @@ public class SoccerFootFight extends JComponent implements KeyListener {
         int key = e.getKeyCode();
         if (key == KeyEvent.VK_RIGHT) {
             player1.right = false;
+            menuRight = false;
         } else if (key == KeyEvent.VK_LEFT) {
             player1.left = false;
+            menuLeft = false;
         } else if (key == KeyEvent.VK_UP) {
             player1.jump = false;
             menuUp = false;
