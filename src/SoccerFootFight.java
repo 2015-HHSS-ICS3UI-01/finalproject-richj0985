@@ -40,9 +40,11 @@ public class SoccerFootFight extends JComponent implements KeyListener {
     long desiredFPS = 60;
     long desiredTime = (1000) / desiredFPS;
     BufferedImage img1 = loadImage("soccer game home screen.jpg");
-    BufferedImage img2 = loadImage("soccer game home screen2.jpg");
+    BufferedImage img2 = loadImage("soccer game writing screen.jpg");
     BufferedImage img3 = loadImage("controls1.jpg");
-    BufferedImage img4 = loadImage("space-bar1.jpg");
+    BufferedImage img4 = loadImage("space bar1.jpg");
+    BufferedImage img5 = loadImage("wasdgame.jpg");
+    BufferedImage img6 = loadImage("shift.jpg");
     // soccer ball
     SoccerBall ball = new SoccerBall();
     // players
@@ -337,9 +339,16 @@ public class SoccerFootFight extends JComponent implements KeyListener {
             Font player1 = new Font("Arial", Font.BOLD, 30);
             g.setFont(player1);
             g.setColor(Color.BLUE);
-            g.drawString("Player 1:", WIDTH / 2 - 500 + 100, 175);
-            g.drawImage(img3, 100, 200, null);
-            g.drawImage(img4, 100, 400, null);
+            g.drawString("Player 1:", WIDTH / 2 - 500 + 100, 175 - 50);
+            g.drawImage(img3, 100, 200 - 50, null);
+            g.drawImage(img4, 100, 400 - 50, null);
+            g.setColor(Color.RED);
+            g.drawString("Player 2:", WIDTH / 2 - 500 + 100 + 500, 175 - 50);
+            g.drawImage(img5, 100 + 500, 200 - 50, null);
+            g.drawImage(img4, 100 + 500, 400 - 50 + 25, null);
+            if(menuLeft){
+                screen = 1;
+            }
         } else if(screen == 4){
             g.drawImage(img2, 0, 0, null);
             Font title2 = new Font("Arial", Font.BOLD, 40);
