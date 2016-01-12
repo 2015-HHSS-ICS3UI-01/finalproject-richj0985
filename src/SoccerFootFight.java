@@ -53,6 +53,8 @@ public class SoccerFootFight extends JComponent implements KeyListener {
     Rectangle net2 = new Rectangle(760 + 200, 300, 40, 200);
     Rectangle crossBar1 = new Rectangle(0, 300, 40, 4);
     Rectangle crossBar2 = new Rectangle(760 + 200, 300, 40, 4);
+    
+    int frameCount = 0;
     // key count
     int keyDownCount = 0;
     int keyUpCount = 0;
@@ -506,6 +508,17 @@ public class SoccerFootFight extends JComponent implements KeyListener {
 
     public void moveBall(SoccerBall ball) {
         if (screen == 2) {
+            
+//            frameCount++;
+//            
+//            if(frameCount >= 2){
+//                // gravity pulling player down
+//                ball.y = ball.y - ball.dy + ball.gravity;
+//                frameCount = 0;
+//            }else{
+//                ball.y = ball.y - ball.dy;
+//            }
+            
             // use variable to represent the drag from the ball to the ground
             int drag;
 
@@ -664,27 +677,49 @@ public class SoccerFootFight extends JComponent implements KeyListener {
         int key = e.getKeyCode();
 
         if (key == KeyEvent.VK_RIGHT) {
-            player1.right = true;
-            menuRight = true;
+            if(screen == 2){
+                player1.right = true;
+            }else if(screen == 3 || screen == 4){
+                menuRight = true;
+            }
         } else if (key == KeyEvent.VK_LEFT) {
-            player1.left = true;
-            menuLeft = false;
+            if(screen == 2){
+                player1.left = true;
+            }else if(screen == 3 || screen == 4){
+                menuLeft = true;
+            }
         } else if (key == KeyEvent.VK_UP) {
-            player1.jump = true;
-            menuUp = true;
+            if(screen == 2){
+                player1.jump = true;
+            }else if(screen == 1){
+                menuUp = true;
+            }
         } else if (key == KeyEvent.VK_SPACE) {
-            player1.kick = true;
-            menuEnter = true;
+            if(screen == 2){
+                player1.kick = true;
+            }else if(screen == 1){
+                menuEnter = true;
+            }
         } else if (key == KeyEvent.VK_A) {
-            player2.left = true;
+            if(screen == 2){
+                player2.left = true;
+            }
         } else if (key == KeyEvent.VK_D) {
-            player2.right = true;
+            if(screen == 2){
+                player2.right = true;
+            }
         } else if (key == KeyEvent.VK_W) {
-            player2.jump = true;
+            if(screen == 2){
+                player2.jump = true;
+            }
         } else if (key == KeyEvent.VK_SHIFT) {
-            player2.kick = true;
+            if(screen == 2){
+                player2.kick = true;
+            }
         } else if (key == KeyEvent.VK_DOWN) {
-            menuDown = true;
+            if(screen == 1){
+                menuDown = true;
+            }
         }
     }
 
@@ -693,29 +728,51 @@ public class SoccerFootFight extends JComponent implements KeyListener {
         keyUpCount++;
         int key = e.getKeyCode();
         if (key == KeyEvent.VK_RIGHT) {
-            player1.right = false;
-            menuRight = false;
+            if(screen == 2){
+                player1.right = false;
+            }else if(screen == 3 || screen == 4){
+                menuRight = false;
+            }
         } else if (key == KeyEvent.VK_LEFT) {
-            player1.left = false;
-            menuLeft = false;
+            if(screen == 2){
+                player1.left = false;
+            }else if(screen == 3 || screen == 4){
+                menuLeft = false;
+            }
         } else if (key == KeyEvent.VK_UP) {
-            player1.jump = false;
-            menuUp = false;
-            menuChange = false;
+            if(screen == 2){
+                player1.jump = false;
+            }else if(screen == 1){
+                menuUp = false;
+                menuChange = false;
+            }
         } else if (key == KeyEvent.VK_SPACE) {
-            player1.kick = false;
-            menuEnter = false;
+            if(screen == 2){
+                player1.kick = false;
+            }else if(screen == 1){
+                menuEnter = false;
+            }
         } else if (key == KeyEvent.VK_A) {
-            player2.left = false;
+            if(screen == 2){
+                player2.left = false;
+            }
         } else if (key == KeyEvent.VK_D) {
-            player2.right = false;
+            if(screen == 2){
+                player2.right = false;
+            }
         } else if (key == KeyEvent.VK_W) {
-            player2.jump = false;
+            if(screen == 2){
+                player2.jump = false;
+            }
         } else if (key == KeyEvent.VK_SHIFT) {
-            player2.kick = false;
+            if(screen == 2){
+                player2.kick = false;
+            }
         } else if (key == KeyEvent.VK_DOWN) {
-            menuDown = false;
-            menuChange = false;
+            if(screen == 1){
+                menuDown = false;
+                menuChange = false;
+            }
         }
     }
 }
