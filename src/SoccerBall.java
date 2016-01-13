@@ -10,4 +10,5 @@ public class SoccerBall extends Rectangle {
     int dy = 0;
     int gravity = 0;
     int speed = 0;
+    int lastXPos = 0;
 }

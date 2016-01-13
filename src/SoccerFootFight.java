@@ -7,6 +7,8 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.AlphaComposite;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.Rectangle;
@@ -28,6 +30,7 @@ public class SoccerFootFight extends JComponent implements KeyListener {
     static final int WIDTH = 800 + 200;
     static final int HEIGHT = 600;
     static final int FIELD_LEVEL = 460;
+
     // Ball travel speeds
     static final int BALL_GRAVITY = 1;
     static final int BALL_SPEED = 10;
@@ -35,18 +38,28 @@ public class SoccerFootFight extends JComponent implements KeyListener {
 //    static final int BALL_GRAVITY       = 3;
 //    static final int BALL_SPEED         = 15;
 //    static final int BALL_DY_MULTIPLIER = 3;
+
     // sets the framerate and delay for our game
     // you just need to select an approproate framerate
-    long desiredFPS = 60;
+    long desiredFPS  = 60;
     long desiredTime = (1000) / desiredFPS;
-    BufferedImage img1 = loadImage("soccer game home screen.jpg");
-    BufferedImage img2 = loadImage("soccer game writing screen.jpg");
-    BufferedImage img3 = loadImage("controls1.jpg");
-    BufferedImage img4 = loadImage("space bar1.jpg");
-    BufferedImage img5 = loadImage("wasdgame.jpg");
-    BufferedImage img6 = loadImage("shift.jpg");
+    
+    BufferedImage imgSoccerField            = loadImage("Soccer Field.png");
+    BufferedImage imgHomeScreen             = loadImage("soccer game home screen.jpg");
+    BufferedImage imgInstructionsBackground = loadImage("soccer game writing screen.jpg");
+    BufferedImage imgControls               = loadImage("controls1.jpg");
+    BufferedImage imgSpaceBar               = loadImage("space bar1.jpg");
+    BufferedImage imgWasDGame               = loadImage("wasdgame.jpg");
+    BufferedImage imgShiftControls          = loadImage("shift.jpg");
+    BufferedImage[] imgBallImages;
+    int ballImageIndex = 0;
+    
     // soccer ball
     SoccerBall ball = new SoccerBall();
+    
+    // variable to record the balls last position when image spun
+    int        ballLastXPositionWhenImageChanged = 0;
+        
     // players
     SoccerPlayer player1 = new SoccerPlayer();
     SoccerPlayer player2 = new SoccerPlayer();
@@ -56,17 +69,16 @@ public class SoccerFootFight extends JComponent implements KeyListener {
     Rectangle crossBar1 = new Rectangle(0, 300, 40, 4);
     Rectangle crossBar2 = new Rectangle(760 + 200, 300, 40, 4);
     
-    int frameCount = 0;
-    // key count
-    int keyDownCount = 0;
-    int keyUpCount = 0;
-    int screen = 1;
+    int     frameCount = 0;
+    int     keyDownCount = 0;
+    int     keyUpCount = 0;
+    int     screen = 1;
     boolean menuUp = false;
     boolean menuDown = false;
     boolean menuEnter = false;
     boolean menuChange = false;
     boolean menuLeft = false;
-    boolean menuRight = false;
+    boolean menuBack = false;
     // store variable for if a goal is being scored
     boolean score = false;
     int redBoxX = HEIGHT / 2;
@@ -106,6 +118,17 @@ public class SoccerFootFight extends JComponent implements KeyListener {
         ball.y = FIELD_LEVEL;
         ball.width = 40;
         ball.height = 40;
+  
+        // Create the array of ball images and load them from 
+        // files that are each rotated to simulate ball rotation. 
+        // and load the images for the soccer ball
+        imgBallImages = new BufferedImage[4];          
+        BufferedImage loadedImg = loadImage("Soccer Ball T1.png");
+        imgBallImages[0] = loadedImg;
+        imgBallImages[1] = loadImage("Soccer Ball T2.png");
+        imgBallImages[2] = loadImage("Soccer Ball T3.png");
+        imgBallImages[3] = loadImage("Soccer Ball T4.png");
+        
     }
 
     public void drawPlayer(Graphics g, SoccerPlayer player) {
@@ -193,15 +216,15 @@ public class SoccerFootFight extends JComponent implements KeyListener {
 
     @Override
     public void paintComponent(Graphics g) {
+        int ballSpin = 0;
+        
         // always clear the screen first!
         g.clearRect(0, 0, WIDTH, HEIGHT);
 
         // GAME DRAWING GOES HERE
         if (screen == 1) {
 
-
-
-            g.drawImage(img1, 0, 0, null);
+            g.drawImage(imgHomeScreen, 0, 0, null);
 
             Font titleFont = new Font("Impact", Font.BOLD, 100);
             g.setFont(titleFont);
@@ -271,6 +294,9 @@ public class SoccerFootFight extends JComponent implements KeyListener {
             g.setColor(sky);
             g.fillRect(0, 0, 800 + 200, 600);
 
+            // draw the soccer background including stands and audience
+            g.drawImage(imgSoccerField, 0, 0, null);
+/*            
             // soccer field
             g.setColor(grass);
             g.fillRect(0, 400, 800 + 200, 200);
@@ -279,13 +305,41 @@ public class SoccerFootFight extends JComponent implements KeyListener {
             g.setColor(Color.WHITE);
             g.fillRect(WIDTH / 2 - 20, 400, 20, 200);
             g.drawOval(365 + 100, 475, 50, 50);
+*/
+            
 
             // ball
+            /*
             g.setColor(Color.BLACK);
             g.fillOval(ball.x, ball.y, ball.width, ball.height);
             g.setColor(Color.WHITE);
             g.fillOval(ball.x + 1, ball.y + 1, ball.width - 2, ball.height - 2);
-
+            */
+            
+            // Draw the ball using a series of bitmaps
+            // move through the ball images as the ball moves based on the 
+            // ball direction to simulate the ball spinning on ground and in the air
+            // determine the rate to move between images based on the amount
+            // of movement since the last time the ball was moved
+            ballSpin = (ball.x - ballLastXPositionWhenImageChanged)/4;
+            if ( ballSpin > 0 ) {
+                // Spin ball forward
+                ballImageIndex += 1;
+                if ( ballImageIndex >= 4 ) {
+                    ballImageIndex = 0;
+                }
+                ballLastXPositionWhenImageChanged = ball.x;
+                
+            } else if ( ballSpin < 0 ) {
+                // Spin ball backwards
+                ballImageIndex -= 1;
+                if ( ballImageIndex < 0 ) {
+                    ballImageIndex = 3;
+                }
+                ballLastXPositionWhenImageChanged = ball.x;
+            } 
+            g.drawImage(imgBallImages[ballImageIndex], ball.x + 1, ball.y + 1, null);
+            
             // draw both nets
             g.setColor(Color.WHITE);
             for (int index = 1; index <= 4; index = index + 1) {
@@ -330,7 +384,7 @@ public class SoccerFootFight extends JComponent implements KeyListener {
             g.setColor(Color.RED);
             g.drawString("CANADA: " + player2.score, WIDTH / 2 - 350, 40);
         } else if(screen == 3){
-            g.drawImage(img2, 0, 0, null);
+            g.drawImage(imgInstructionsBackground, 0, 0, null);
             Font title = new Font("Arial", Font.BOLD, 40);
             g.setFont(title);
             g.setColor(Color.WHITE);
@@ -340,21 +394,27 @@ public class SoccerFootFight extends JComponent implements KeyListener {
             g.setFont(player1);
             g.setColor(Color.BLUE);
             g.drawString("Player 1:", WIDTH / 2 - 500 + 100, 175 - 50);
-            g.drawImage(img3, 100, 200 - 50, null);
-            g.drawImage(img4, 100, 400 - 50, null);
+            g.drawImage(imgControls, 100, 200 - 50, null);
+            g.drawImage(imgSpaceBar, 100, 400 - 50, null);
             g.setColor(Color.RED);
             g.drawString("Player 2:", WIDTH / 2 - 500 + 100 + 500, 175 - 50);
-            g.drawImage(img5, 100 + 500, 200 - 50, null);
-            g.drawImage(img4, 100 + 500, 400 - 50 + 25, null);
-            if(menuLeft){
+            g.drawImage(imgWasDGame, 100 + 500, 200 - 50, null);
+            g.drawImage(imgSpaceBar, 100 + 500, 400 - 50 + 25, null);
+            System.out.println("menuLeft = " + menuLeft + "menuBack = " + menuBack);
+            if(menuLeft && !menuBack){
                 screen = 1;
+                menuBack = true;
             }
         } else if(screen == 4){
-            g.drawImage(img2, 0, 0, null);
+            g.drawImage(imgInstructionsBackground, 0, 0, null);
             Font title2 = new Font("Arial", Font.BOLD, 40);
             g.setFont(title2);
             g.setColor(Color.WHITE);
             g.drawString("Instructions:", WIDTH / 2 - 500, 40);
+            if(menuLeft && !menuBack){
+                screen = 1;
+                menuBack = true;
+            }
         }
         // GAME DRAWING ENDS HERE
     }
@@ -454,6 +514,11 @@ public class SoccerFootFight extends JComponent implements KeyListener {
                     ball.speed += 1;
                 }
             }
+            
+            // remember the last ball position to allow it to be available
+            // to determine the ball rolling amount
+            ball.lastXPos = ball.x;
+            
             // push the ball ahead of the player to simulate the player carrying the ball up the field
             if (player.x + player.width / 2 <= ball.x) {
                 ball.x += 5;
@@ -688,8 +753,6 @@ public class SoccerFootFight extends JComponent implements KeyListener {
         if (key == KeyEvent.VK_RIGHT) {
             if(screen == 2){
                 player1.right = true;
-            }else if(screen == 3 || screen == 4){
-                menuRight = true;
             }
         } else if (key == KeyEvent.VK_LEFT) {
             if(screen == 2){
@@ -706,9 +769,8 @@ public class SoccerFootFight extends JComponent implements KeyListener {
         } else if (key == KeyEvent.VK_SPACE) {
             if(screen == 2){
                 player1.kick = true;
-            }else if(screen == 1){
-                menuEnter = true;
             }
+                menuEnter = true;
         } else if (key == KeyEvent.VK_A) {
             if(screen == 2){
                 player2.left = true;
@@ -739,14 +801,13 @@ public class SoccerFootFight extends JComponent implements KeyListener {
         if (key == KeyEvent.VK_RIGHT) {
             if(screen == 2){
                 player1.right = false;
-            }else if(screen == 3 || screen == 4){
-                menuRight = false;
             }
         } else if (key == KeyEvent.VK_LEFT) {
             if(screen == 2){
                 player1.left = false;
             }else if(screen == 3 || screen == 4){
                 menuLeft = false;
+                menuBack = false;
             }
         } else if (key == KeyEvent.VK_UP) {
             if(screen == 2){
@@ -758,9 +819,8 @@ public class SoccerFootFight extends JComponent implements KeyListener {
         } else if (key == KeyEvent.VK_SPACE) {
             if(screen == 2){
                 player1.kick = false;
-            }else if(screen == 1){
-                menuEnter = false;
             }
+                menuEnter = false;
         } else if (key == KeyEvent.VK_A) {
             if(screen == 2){
                 player2.left = false;
