@@ -30,6 +30,7 @@ public class SoccerFootFight extends JComponent implements KeyListener {
     static final int WIDTH = 800 + 200;
     static final int HEIGHT = 600;
     static final int FIELD_LEVEL = 460;
+
     // Ball travel speeds
     static final int BALL_GRAVITY = 1;
     static final int BALL_SPEED = 10;
@@ -41,15 +42,26 @@ public class SoccerFootFight extends JComponent implements KeyListener {
     // you just need to select an approproate framerate
     long desiredFPS = 60;
     long desiredTime = (1000) / desiredFPS;
-    BufferedImage imgSoccerField = loadImage("Soccer Field.png");
-    BufferedImage imgHomeScreen = loadImage("soccer game home screen.jpg");
+
+    // image files used by the game
+    BufferedImage imgSoccerField            = loadImage("Soccer Field.png");
+    BufferedImage imgHomeScreen             = loadImage("soccer game home screen.jpg");
     BufferedImage imgInstructionsBackground = loadImage("soccer game writing screen.jpg");
-    BufferedImage imgControls = loadImage("controls1.jpg");
-    BufferedImage imgSpaceBar = loadImage("space bar1.jpg");
-    BufferedImage imgWasDGame = loadImage("wasdgame.jpg");
-    BufferedImage imgShiftControls = loadImage("shift.jpg");
+    BufferedImage imgControls               = loadImage("controls1.jpg");
+    BufferedImage imgSpaceBar               = loadImage("space bar1.jpg");
+    BufferedImage imgWasDGame               = loadImage("wasdgame.jpg");
+    BufferedImage imgShiftControls          = loadImage("shift.jpg");
     BufferedImage[] imgBallImages;
     int ballImageIndex = 0;
+
+    // sound effects used by the game
+    SoundEffect soundGameMenu               = new SoundEffect("Game Menu.wav");
+    SoundEffect soundBallKicked             = new SoundEffect("Ball Kicked.wav");
+    SoundEffect soundBallBounce             = new SoundEffect("Ball Bounce.wav");
+    SoundEffect soundStadiumCrowd           = new SoundEffect("Stadium Crowd.wav");
+    SoundEffect soundGoal                   = new SoundEffect("Goal.wav");
+       
+
     // soccer ball
     SoccerBall ball = new SoccerBall();
     // variable to record the balls last position when image spun
@@ -66,19 +78,24 @@ public class SoccerFootFight extends JComponent implements KeyListener {
     int keyDownCount = 0;
     int keyUpCount = 0;
     int screen = 1;
+    boolean goalScored = false;
     boolean menuUp = false;
     boolean menuDown = false;
     boolean menuEnter = false;
     boolean menuChange = false;
     boolean menuLeft = false;
     boolean menuBack = false;
-    // store variable for if a goal is being scored
+
+    // store variable for score board
     boolean score = false;
     int redBoxX = HEIGHT / 2;
     long time = 3 * 60000;
     long elapsedTime = 0;
     long startMatchTime = 0;
+    int goalTime = 0;
 
+    
+    // method to load an image file
     public BufferedImage loadImage(String file) {
         BufferedImage img = null;
         try {
@@ -89,6 +106,8 @@ public class SoccerFootFight extends JComponent implements KeyListener {
         return img;
     }
 
+    
+    // All game initialization
     public void initializeGame() {
         // Initialize the players positions
         player2.playerNum = 2;
@@ -204,6 +223,7 @@ public class SoccerFootFight extends JComponent implements KeyListener {
             g.drawLine(player.x + 40 - 22, player.y - 40 + 80, player.x + 40 - 22, player.y - 40 + 80);
         }
     }
+  
     // drawing of the game happens in here
     // we use the Graphics object, g, to perform the drawing
     // NOTE: This is already double buffered!(helps with framerate/speed)
@@ -261,22 +281,6 @@ public class SoccerFootFight extends JComponent implements KeyListener {
             }
             g.drawString("INSTRUCTIONS", WIDTH / 2 - 100 - 50, HEIGHT / 2 + 40 + 60 + 60);
 
-            if (menuUp && !menuChange && redBoxX != HEIGHT / 2) {
-                redBoxX = redBoxX - 60;
-                menuChange = true;
-            } else if (menuDown && !menuChange && redBoxX != HEIGHT / 2 + 60 + 60) {
-                redBoxX = redBoxX + 60;
-                menuChange = true;
-            }
-
-            if (redBoxX == HEIGHT / 2 && menuEnter) {
-                screen = 2;
-                startMatchTime = System.currentTimeMillis();
-            } else if (redBoxX == HEIGHT / 2 + 60 && menuEnter) {
-                screen = 3;
-            } else if (redBoxX == HEIGHT / 2 + 60 + 60 && menuEnter) {
-                screen = 4;
-            }
         } else if (screen == 2) {
             // Colors
             // grass
@@ -358,7 +362,7 @@ public class SoccerFootFight extends JComponent implements KeyListener {
                 g.drawLine(net2.x, net2.y + index, net2.x + net2.width, net2.y + index);
             }
 
-            // draw the player
+            // draw the players
             drawPlayer(g, player1);
             drawPlayer(g, player2);
 
@@ -374,10 +378,10 @@ public class SoccerFootFight extends JComponent implements KeyListener {
 //            g.drawString("Soccer Foot Fight", WIDTH / 2 - 150, 40);
             g.setFont(scoreFont);
             g.setColor(Color.BLUE);
-            g.drawString("USA: " + player1.score, WIDTH / 2 + 200 - 150, 40 + 20);
+            g.drawString("USA: " + player1.score, WIDTH / 2 + 200 - 150 - 15, 40 + 20);
             g.setFont(scoreFont);
             g.setColor(Color.RED);
-            g.drawString("CANADA: " + player2.score, WIDTH / 2 - 350 + 225, 40 + 20);
+            g.drawString("CAN: " + player2.score, WIDTH / 2 - 350 + 225 + 15, 40 + 20);
             g.setFont(scoreFont);
             g.setColor(Color.WHITE);
             
@@ -388,10 +392,25 @@ public class SoccerFootFight extends JComponent implements KeyListener {
             
             seconds = seconds - 60*minute;
             
-            if(seconds == 0){
-               g.drawString(minute + ":" + seconds + "0", WIDTH / 2 - 350 + 225 + 20 + 60, 40 + 20 + 20 + 20); 
+            if(seconds < 10){
+               g.drawString(minute + ":" + "0" + seconds, WIDTH / 2 - 350 + 225 + 20 + 60 + 15, 40 + 20 + 20 + 20); 
             }else{
-                g.drawString(minute + ":" + seconds, WIDTH / 2 - 350 + 225 + 20 + 60, 40 + 20 + 20 + 20);
+               g.drawString(minute + ":" + seconds, WIDTH / 2 - 350 + 225 + 20 + 60 + 15, 40 + 20 + 20 + 20);
+            }
+            
+            if(seconds == 0 && minute == 0){
+                screen = 5;
+            }
+            
+            if(goalScored){
+                Font goal = new Font("IMPACT", Font.BOLD, 100);
+                g.setFont(goal);
+                g.setColor(Color.RED);
+                g.drawString("GOAL!", WIDTH / 2 - 130, 200);
+                goalTime --;
+                if(goalTime <= 0){
+                    goalScored = false;
+                }
             }
         } else if (screen == 3) {
             g.drawImage(imgInstructionsBackground, 0, 0, null);
@@ -409,30 +428,30 @@ public class SoccerFootFight extends JComponent implements KeyListener {
             g.setColor(Color.RED);
             g.drawString("Player 2:", WIDTH / 2 - 500 + 100 + 500, 175 - 50);
             g.drawImage(imgWasDGame, 100 + 500, 200 - 50, null);
-            g.drawImage(imgSpaceBar, 100 + 500, 400 - 50 + 25, null);
-            if (menuLeft && !menuBack) {
-                screen = 1;
-                menuBack = true;
-            }
+            g.drawImage(imgShiftControls, 100 + 500, 400 - 50 + 25, null);
+
         } else if (screen == 4) {
             g.drawImage(imgInstructionsBackground, 0, 0, null);
             Font title2 = new Font("Arial", Font.BOLD, 40);
             g.setFont(title2);
             g.setColor(Color.BLUE);
             g.drawString("Instructions:", WIDTH / 2 - 500, 40);
-            if (menuLeft && !menuBack) {
-                screen = 1;
-                menuBack = true;
-            }
+            
             Font explain = new Font("Arial", Font.BOLD, 20);
             g.setFont(explain);
             g.setColor(Color.WHITE);
             g.drawString("Kick!...Shoot!...Score!...", WIDTH / 2 - 500, 100);
-            g.drawString("Foot Fight Soccer is a game designed for users to enjoy the game of 1 on 1 soccer at a competitive level.", WIDTH / 2 - 500, 100 + 20);
+            g.drawString("Soccer Foot Fight is a game designed for users to enjoy 1 on 1 soccer at a competitive level.", WIDTH / 2 - 500, 100 + 20);
             g.drawString("How To Play:", WIDTH / 2 - 500, 100 + 20 + 40);
-            g.drawString("1. Players start at opposite sides of the field. Player 1 starts on the right and Player 2 starts on the left.", WIDTH / 2 - 500, 100 + 20 + 60);
-            g.drawString("2. Players compete to put it ball, located in the centre, in the oppositing net.", WIDTH / 2 - 500, 100 + 20 + 80);
-            g.drawString("3. The players with the most goals by the end of the time wins!", WIDTH / 2 - 500, 100 + 20 + 100);
+            g.drawString("      1. The clock starts to count down from 3 minutes to indicate the amount of time left in the match.", WIDTH / 2 - 500, 100 + 20 + 60);
+            g.drawString("      2. Players start at opposite sides of the field. Player 1 starts on the right and Player 2 starts on the left.", WIDTH / 2 - 500, 100 + 20 + 80);
+            g.drawString("      3. The ball is located at the centre of the field.", WIDTH / 2 - 500, 100 + 20 + 100);
+            g.drawString("      4. Players compete to put the ball in the oppositing net.", WIDTH / 2 - 500, 100 + 20 + 120);
+            g.drawString("      5. If a Player scores, the ball and the players reset at the centre.", WIDTH / 2 - 500, 100 + 20 + 140);
+            g.drawString("      6. The Player with the most goals by the end of the time wins!", WIDTH / 2 - 500, 100 + 20 + 160);
+            g.drawString("      (Controls can be viewed in the control section)", WIDTH / 2 - 500, 100 + 20 + 180);
+            g.drawString("Credits:", WIDTH / 2 - 500, 100 + 20 + 240);
+            g.drawString("      Soccer Foot Fight was programmed by Jon Richards", WIDTH / 2 - 500, 100 + 20 + 260);
         }
         // GAME DRAWING ENDS HERE
     }
@@ -500,12 +519,24 @@ public class SoccerFootFight extends JComponent implements KeyListener {
             // ball hit the player, allow the ball to rise into the air after
             // hitting the player
             ball.gravity = 0;
-            // players head (top 25% of player)
-//            Rectangle playersHead = new Rectangle();
-//            playersHead.x          = player.x;
-//            playersHead.y          = player.y;
-//            playersHead.width      = player.width;
-//            playersHead.height     = player.height / 4;
+
+            // top portion of players head
+            Rectangle playersHead = new Rectangle();
+            playersHead.x          = player.x;
+            playersHead.y          = player.y;
+            playersHead.width      = player.width;
+            playersHead.height     = player.height  / 10;
+            if (playersHead.intersects(ball)) {
+                // ball hit the players head
+                soundBallBounce.Start();  
+            } else {
+                // the ball hit another part of the player body
+                // take most of the bounce out of ball
+                ball.speed /= 4;
+                ball.dy /= 4;
+            }
+
+            
             // set the balls X direction based on side the player the ball hit
             Rectangle playersLeftSide = new Rectangle();
             playersLeftSide.x = player.x;
@@ -531,6 +562,7 @@ public class SoccerFootFight extends JComponent implements KeyListener {
                     // increase the ball speed due to conflict
                     ball.speed += 1;
                 }
+              
             }
 
             // remember the last ball position to allow it to be available
@@ -581,6 +613,9 @@ public class SoccerFootFight extends JComponent implements KeyListener {
 //            if (ball.dy > 100) {
 //                ball.dy = 100;
 //            }
+            // play sound to indicate the ball has been kicked
+            soundBallKicked.Start();
+            
         }
         if (player.kick) {
             if (player.x + player.width / 2 <= ball.x) {
@@ -592,8 +627,8 @@ public class SoccerFootFight extends JComponent implements KeyListener {
             }
         } else {
             player.foot1X = 0;
-            player.foot2X = 0;
             player.foot1Y = 0;
+            player.foot2X = 0;
             player.foot2Y = 0;
         }
     }
@@ -623,13 +658,19 @@ public class SoccerFootFight extends JComponent implements KeyListener {
 
             // bounce the ball off the field surface
             // reduce the bounce height of the ball each time it hits the ground
-            if (ball.y >= FIELD_LEVEL) {
+            if (ball.y > FIELD_LEVEL) {
                 ball.y = FIELD_LEVEL;
                 // reduce the size of the bounce by 40%
                 // set gravity strength back to zero to allow the ball to begin to 
                 // bounce up. 
                 ball.dy -= (float) ball.dy * .20;
                 ball.gravity = 0;
+                
+                // provided the ball is going to bounce then play a bounce sound
+                if ( ball.dy != 0 ) {
+                    // ball will bounce off surface
+                    soundBallBounce.Start();            
+                }
             }
 
             // if the ball moving and is rolling on the ground, apply some drag to the ball speed
@@ -652,10 +693,12 @@ public class SoccerFootFight extends JComponent implements KeyListener {
             if (ball.x < 0) {
                 ball.x = 0;
                 ball.speed = ball.speed / 2 * -1;
-            } else if (ball.x > WIDTH - 40) {
+                soundBallBounce.Start();            
+           } else if (ball.x > WIDTH - 40) {
                 ball.speed = ball.speed / 2 * -1;
                 ball.x = WIDTH - 40;
-            }
+                soundBallBounce.Start();            
+           }
 
             // ball collides with the cross bar of the net
             if (ball.intersects(crossBar1) || ball.intersects(crossBar2)) {
@@ -671,15 +714,40 @@ public class SoccerFootFight extends JComponent implements KeyListener {
                         ball.speed -= 1;
                     }
                 }
-            }
+                soundBallBounce.Start();            
+           }
 
             // ball is scored
             if (score == false && ball.intersects(net1) && !ball.intersects(crossBar1)) {
                 player1.score = player1.score + 1;
                 score = true;
+                player2.direction = 1;
+                player2.x = 50;
+                player2.y = 500 - 80;
+                player1.direction = 2;
+                player1.x = WIDTH - 50 - 60;
+                player1.y = 500 - 80;
+                ball.x = 470;
+                ball.y = FIELD_LEVEL;
+                ball.speed = 0;
+                goalScored = true;
+                goalTime = 60*3;
+                soundGoal.Start();
             } else if (score == false && ball.intersects(net2) && !ball.intersects(crossBar2)) {
                 player2.score = player2.score + 1;
                 score = true;
+                player2.direction = 1;
+                player2.x = 50;
+                player2.y = 500 - 80;
+                player1.direction = 2;
+                player1.x = WIDTH - 50 - 60;
+                player1.y = 500 - 80;
+                ball.x = 470;
+                ball.y = FIELD_LEVEL;
+                ball.speed = 0;
+                goalScored = true;
+                goalTime = 60*3;
+                soundGoal.Start();
             } else if (!ball.intersects(net1) && !ball.intersects(net2)) {
                 score = false;
             }
@@ -696,6 +764,10 @@ public class SoccerFootFight extends JComponent implements KeyListener {
 
         // Initialize the goal objects of the game
         initializeGame();
+        
+        // Start playing the soccer stadium background sound
+        soundGameMenu.Start();
+        
         // the main game loop section
         // game will end if you set done = false;
         boolean done = false;
@@ -705,8 +777,35 @@ public class SoccerFootFight extends JComponent implements KeyListener {
 
             // all your game rules and move is done in here
             // GAME LOGIC STARTS HERE 
-            // move players in game
-            if (screen == 2) {
+
+            // Determine which mode/screen we are to know what to do/call
+            if ( screen == 1 ) {
+                // Menu screen  
+                // allow navigation of the menu
+                if (menuUp && !menuChange && redBoxX != HEIGHT / 2) {
+                    redBoxX = redBoxX - 60;
+                    menuChange = true;
+                } else if (menuDown && !menuChange && redBoxX != HEIGHT / 2 + 60 + 60) {
+                    redBoxX = redBoxX + 60;
+                    menuChange = true;
+                }
+
+                if (redBoxX == HEIGHT / 2 && menuEnter) {
+                    screen = 2;
+                    startMatchTime = System.currentTimeMillis();
+                    
+                    // switch the sound to game mode
+                    soundGameMenu.Stop();
+                    soundStadiumCrowd.Start();
+        
+                } else if (redBoxX == HEIGHT / 2 + 60 && menuEnter) {
+                    screen = 3;
+                } else if (redBoxX == HEIGHT / 2 + 60 + 60 && menuEnter) {
+                    screen = 4;
+                }
+            } else if (screen == 2) {
+                // main game mode
+                // move players in game
                 movePlayer(player1, ball);
                 movePlayer(player2, ball);
 
@@ -715,7 +814,15 @@ public class SoccerFootFight extends JComponent implements KeyListener {
                 
                 // test
                 //System.out.println("P1X:" + player1.x + " P1Y:" + player1.y + " P2X:" + player2.x + " P2Y:" + player2.y + " P1Gravity:" + player1.gravity + " BX:" + ball.x + " BY:" + ball.y + " BSpeed:" + ball.speed + " BGravity:" + ball.gravity + " KD:" + keyDownCount + " KU:" + keyUpCount + " SPC:" + player1.kick + " Score:" + score + " BIN1:" + ball.intersects(net1) + " BIN2:" + ball.intersects(net2));
+            } else if ( (screen == 3) || (screen == 4) ) {
+                // In instructions mode or controls mode
+                // allow user to exit the mode back to the menu
+                if (menuLeft && !menuBack) {
+                    screen = 1;
+                    menuBack = true;
+                }
             }
+       
             // GAME LOGIC ENDS HERE 
             // update the drawing (calls paintComponent)
             repaint();
