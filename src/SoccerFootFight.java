@@ -51,6 +51,7 @@ public class SoccerFootFight extends JComponent implements KeyListener {
     BufferedImage imgSpaceBar               = loadImage("space bar1.jpg");
     BufferedImage imgWasDGame               = loadImage("wasdgame.jpg");
     BufferedImage imgShiftControls          = loadImage("shift.jpg");
+    BufferedImage imgEndGame                = loadImage("END.jpg");
     BufferedImage[] imgBallImages;
     int ballImageIndex = 0;
 
@@ -89,7 +90,7 @@ public class SoccerFootFight extends JComponent implements KeyListener {
     // store variable for score board
     boolean score = false;
     int redBoxX = HEIGHT / 2;
-    long time = 3 * 60000;
+    long time = 1 * 60000;
     long elapsedTime = 0;
     long startMatchTime = 0;
     int goalTime = 0;
@@ -399,7 +400,13 @@ public class SoccerFootFight extends JComponent implements KeyListener {
             }
             
             if(seconds == 0 && minute == 0){
-                screen = 5;
+                if(player1.score > player2.score){
+                    screen = 5;
+                }else if(player2.score > player1.score){
+                    screen = 6;
+                }else{
+                    screen = 7;
+                }
             }
             
             if(goalScored){
@@ -452,6 +459,12 @@ public class SoccerFootFight extends JComponent implements KeyListener {
             g.drawString("      (Controls can be viewed in the control section)", WIDTH / 2 - 500, 100 + 20 + 180);
             g.drawString("Credits:", WIDTH / 2 - 500, 100 + 20 + 240);
             g.drawString("      Soccer Foot Fight was programmed by Jon Richards", WIDTH / 2 - 500, 100 + 20 + 260);
+        }else if(screen == 5){
+            g.drawImage(imgEndGame, 0, 0, null);
+        }else if(screen == 6){
+            g.drawImage(imgEndGame, 0, 0, null);
+        }else if(screen == 7){
+            g.drawImage(imgEndGame, 0, 0, null);
         }
         // GAME DRAWING ENDS HERE
     }
