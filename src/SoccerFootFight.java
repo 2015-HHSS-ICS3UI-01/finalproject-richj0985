@@ -90,12 +90,12 @@ public class SoccerFootFight extends JComponent implements KeyListener {
     // store variable for score board
     boolean score = false;
     int redBoxX = HEIGHT / 2;
-    long time = 1 * 60000;
+    long time = 1 * 10000;
     long elapsedTime = 0;
     long startMatchTime = 0;
     int goalTime = 0;
 
-    
+    int endGameTime = 60 * 5;
     // method to load an image file
     public BufferedImage loadImage(String file) {
         BufferedImage img = null;
@@ -393,21 +393,31 @@ public class SoccerFootFight extends JComponent implements KeyListener {
             int minute = seconds/60;
             
             seconds = seconds - 60*minute;
+            System.out.println(endGameTime);
+            if(seconds == 0 && minute == 0){
+                if(endGameTime > 0){
+                    Font ENDGAME = new Font("Arial", Font.BOLD, 500);
+                    g.setFont(ENDGAME);
+                    g.setColor(Color.WHITE);
+                    g.drawString("GAME OVER", WIDTH / 2, HEIGHT / 2);
+                    endGameTime = endGameTime -60;
+                }
+            }
+            
+            if(endGameTime <= 0){
+                if(player1.score > player2.score){
+                    screen = 5;
+                }else if(player2.score > player1.score){
+                    screen = 6;
+                }else if(player1.score == player2.score){
+                    screen = 7;
+                }
+            }
             
             if(seconds < 10){
                g.drawString(minute + ":" + "0" + seconds, WIDTH / 2 - 350 + 225 + 20 + 60 + 15, 40 + 20 + 20 + 20); 
             }else{
                g.drawString(minute + ":" + seconds, WIDTH / 2 - 350 + 225 + 20 + 60 + 15, 40 + 20 + 20 + 20);
-            }
-            
-            if(seconds == 0 && minute == 0){
-                if(player1.score > player2.score){
-                    screen = 5;
-                }else if(player2.score > player1.score){
-                    screen = 6;
-                }else{
-                    screen = 7;
-                }
             }
             
             if(goalScored){
@@ -452,14 +462,14 @@ public class SoccerFootFight extends JComponent implements KeyListener {
             g.drawString("Soccer Foot Fight is a game designed for users to enjoy 1 on 1 soccer at a competitive level.", WIDTH / 2 - 500, 100 + 20);
             g.drawString("How To Play:", WIDTH / 2 - 500, 100 + 20 + 40);
             g.drawString("      1. The clock starts to count down from 3 minutes to indicate the amount of time left in the match.", WIDTH / 2 - 500, 100 + 20 + 60);
-            g.drawString("      2. Players start at opposite sides of the field. Player 1 starts on the right and Player 2 starts on the left.", WIDTH / 2 - 500, 100 + 20 + 80);
+            g.drawString("      2. Players start at opposite sides of the field. Player 1 starts on the right and Player 2 on the left.", WIDTH / 2 - 500, 100 + 20 + 80);
             g.drawString("      3. The ball is located at the centre of the field.", WIDTH / 2 - 500, 100 + 20 + 100);
             g.drawString("      4. Players compete to put the ball in the oppositing net.", WIDTH / 2 - 500, 100 + 20 + 120);
             g.drawString("      5. If a Player scores, the ball and the players reset at the centre.", WIDTH / 2 - 500, 100 + 20 + 140);
             g.drawString("      6. The Player with the most goals by the end of the time wins!", WIDTH / 2 - 500, 100 + 20 + 160);
             g.drawString("      (Controls can be viewed in the control section)", WIDTH / 2 - 500, 100 + 20 + 180);
             g.drawString("Credits:", WIDTH / 2 - 500, 100 + 20 + 240);
-            g.drawString("      Soccer Foot Fight was programmed by Jon Richards", WIDTH / 2 - 500, 100 + 20 + 260);
+            g.drawString("      Programmed: Jon Richards.", WIDTH / 2 - 500, 100 + 20 + 260);
         }else if(screen == 5){
             g.drawImage(imgEndGame, 0, 0, null);
             Font win1 = new Font("IMPACT", Font.BOLD, 100);
@@ -477,7 +487,7 @@ public class SoccerFootFight extends JComponent implements KeyListener {
             Font tie = new Font("IMPACT", Font.BOLD, 100);
             g.setFont(tie);
             g.setColor(Color.RED);
-            g.drawString("TIE GAME!", WIDTH / 2 - 350, 250);
+            g.drawString("TIE GAME!", WIDTH / 2 - 250, 250);
         }
         // GAME DRAWING ENDS HERE
     }
