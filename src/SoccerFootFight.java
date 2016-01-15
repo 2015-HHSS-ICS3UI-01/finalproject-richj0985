@@ -146,6 +146,7 @@ public class SoccerFootFight extends JComponent implements KeyListener {
     }
 
     public void drawPlayer(Graphics g, SoccerPlayer player) {
+        
         // skin color
         Color whiteSkin = new Color(247, 238, 188);
 
@@ -461,10 +462,22 @@ public class SoccerFootFight extends JComponent implements KeyListener {
             g.drawString("      Soccer Foot Fight was programmed by Jon Richards", WIDTH / 2 - 500, 100 + 20 + 260);
         }else if(screen == 5){
             g.drawImage(imgEndGame, 0, 0, null);
+            Font win1 = new Font("IMPACT", Font.BOLD, 100);
+            g.setFont(win1);
+            g.setColor(Color.BLUE);
+            g.drawString("PLAYER 1 WINS!", WIDTH / 2 - 350, 250);
         }else if(screen == 6){
             g.drawImage(imgEndGame, 0, 0, null);
+            Font win2 = new Font("IMPACT", Font.BOLD, 100);
+            g.setFont(win2);
+            g.setColor(Color.RED);
+            g.drawString("PLAYER 2 WINS!", WIDTH / 2 - 350, 250);
         }else if(screen == 7){
             g.drawImage(imgEndGame, 0, 0, null);
+            Font tie = new Font("IMPACT", Font.BOLD, 100);
+            g.setFont(tie);
+            g.setColor(Color.RED);
+            g.drawString("TIE GAME!", WIDTH / 2 - 350, 250);
         }
         // GAME DRAWING ENDS HERE
     }
@@ -611,9 +624,8 @@ public class SoccerFootFight extends JComponent implements KeyListener {
             playerFootRect.x = player.x - ball.width / 2;
         }
         playerFootRect.y = player.y + player.height - ball.width / 4;
-        playerFootRect.width = ball.width + ball.width / 2;
-        playerFootRect.height = ball.height + ball.width / 2;
-
+        playerFootRect.width = ball.width / 2;
+        playerFootRect.height = ball.width / 2;
         // If player is atempting to kick the ball, determine if the ball is close enough to the player
         // if it is then set the ball in motion using the speed and dx
         if (player.kick && playerFootRect.intersects(ball)) {
