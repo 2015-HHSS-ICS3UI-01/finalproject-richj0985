@@ -502,7 +502,7 @@ public class SoccerFootFight extends JComponent implements KeyListener {
                 Font win1 = new Font("IMPACT", Font.BOLD, 100);
                 g.setFont(win1);
                 g.setColor(Color.BLUE);
-                g.drawString("PLAYER 1 WINS!", WIDTH / 2 - 350, 250);
+                g.drawString("USA WINS!", WIDTH / 2 - 350, 250);
                 
             }else if(player2.goals > player1.goals){
                 // Player 2 Wins
@@ -510,7 +510,7 @@ public class SoccerFootFight extends JComponent implements KeyListener {
                 Font win2 = new Font("IMPACT", Font.BOLD, 100);
                 g.setFont(win2);
                 g.setColor(Color.RED);
-                g.drawString("PLAYER 2 WINS!", WIDTH / 2 - 350, 250);
+                g.drawString("CANADA WINS!", WIDTH / 2 - 350, 250);
 
             }else if(player1.goals == player2.goals){
                 // Tie Game
@@ -606,7 +606,24 @@ public class SoccerFootFight extends JComponent implements KeyListener {
                 ball.x -= 5;               
             }
         }
-
+        
+        // if the player is in contact with the other player then
+        // push the player over to the left or right 
+        if ( player1.intersects(player2) ) {
+            if(player2.y > player1.y){
+                if ( player1.x > player2.x) { 
+                     player1.x += 2;
+                } else {
+                     player1.x -= 2;               
+                }
+            }else if(player1.y > player2.y){
+                if ( player1.x > player2.x) { 
+                     player1.x += 2;
+                } else {
+                     player1.x -= 2;               
+                }
+            }
+        }
         // Player controls indicate player moving right.
         // Move the player on to RIGHT on the field
         if (player.right) {
@@ -695,10 +712,15 @@ public class SoccerFootFight extends JComponent implements KeyListener {
             // ball has been kicked, set it's speed and direction
             ball.speed = player.direction * BALL_SPEED;
             ball.x += ball.speed;
+            if(player.powerKickCount == 600){
+                ball.dy = 20;
+                ball.speed = player.direction * 50;
+                player.powerKickCount = 0;
+            }else{
 
-            // set the power of the kick based on random value
-            ball.dy = (int) (Math.random() * (12 - 5 + 1) + 5) * BALL_DY_MULTIPLIER;
-
+                // set the power of the kick based on random value
+                ball.dy = (int) (Math.random() * (12 - 5 + 1) + 5) * BALL_DY_MULTIPLIER;
+            }
             // play sound to indicate the ball has been kicked
             soundBallKicked.Start();
             
@@ -717,9 +739,11 @@ public class SoccerFootFight extends JComponent implements KeyListener {
             player.foot2X = 0;
             player.foot2Y = 0;
         }
-        
+        if(player.powerKickCount < 600){
+            player.powerKickCount = player.powerKickCount + 1;
+        }
     }
-
+    
     // method to move the ball each frame based on the balls speed (x coordinate)
     // and on DY in the Y coordinate.   THe ball will bounce off the edges
     // of the field, off players heads, off the goal posts. 
@@ -902,7 +926,7 @@ public class SoccerFootFight extends JComponent implements KeyListener {
                 seconds = (int)(MATCH_TIME_SECONDS - elapsedTime/1000);
                 minutes = seconds/60;
                 seconds = seconds - 60*minutes;
-                
+                System.out.println("player1: " + player1.powerKickCount + " player2: " + player2.powerKickCount);
                 // determine if soccer match time has expired
                 if ( minutes <= 0 && seconds <= 0 ) {
                     // Determine if the game has just ended, 

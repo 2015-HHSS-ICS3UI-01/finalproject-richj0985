@@ -43,5 +43,6 @@ public class SoccerPlayer extends Rectangle {
     boolean kick  = false;
     
     int lastXPos = 0;
-
+    
+    int powerKickCount = 0;
 }
