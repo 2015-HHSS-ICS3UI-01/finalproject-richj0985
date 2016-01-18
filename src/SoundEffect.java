@@ -11,14 +11,9 @@ import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
-/**
- *
- * @author Matthew
+ * SoccerEffect - used to load and play .WAV files
+ * 
+ * @author richj0985
  */
 public class SoundEffect {
 
@@ -46,19 +41,19 @@ public class SoundEffect {
 
           catch (MalformedURLException e) {
               e.printStackTrace();
-              throw new RuntimeException("Sound: Malformed URL: " + e);
+              throw new RuntimeException("SoundEffect: Malformed URL: " + e);
           }
           catch (UnsupportedAudioFileException e) {
               e.printStackTrace();
-              throw new RuntimeException("Sound: Unsupported Audio File: " + e);
+              throw new RuntimeException("SoundEffect: Unsupported Audio File: " + e);
           }
           catch (IOException e) {
               e.printStackTrace();
-              throw new RuntimeException("Sound: Input/Output Error: " + e);
+              throw new RuntimeException("SoundEffect: Input/Output Error: " + e);
           }
           catch (LineUnavailableException e) {
               e.printStackTrace();
-              throw new RuntimeException("Sound: Line Unavailable Exception Error: " + e);
+              throw new RuntimeException("SoundEffect: Line Unavailable Exception Error: " + e);
           }
 
       }

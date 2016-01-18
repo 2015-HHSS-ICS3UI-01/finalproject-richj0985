@@ -1,8 +1,12 @@
-
 import java.awt.Rectangle;
 
-/**
+/*
+ * SoccerPlayer class 
  *
+ * The player object that contains all soccer player attributes 
+ * this class extends Rectangle to allow the use of the Rectangle methods to be 
+ * used include intersection
+ * 
  * @author richj0985
  */
 public class SoccerPlayer extends Rectangle {
@@ -12,7 +16,7 @@ public class SoccerPlayer extends Rectangle {
     // direction - 1=moving left to right, -1=moving right to left
     int     direction = 0;
     
-    int     score     = 0;
+    int     goals     = 0;
     
     // foot 
     int     foot2X    = 0;
@@ -37,5 +41,7 @@ public class SoccerPlayer extends Rectangle {
     boolean left  = false;
     boolean jump  = false;
     boolean kick  = false;
+    
+    int lastXPos = 0;
 
 }
