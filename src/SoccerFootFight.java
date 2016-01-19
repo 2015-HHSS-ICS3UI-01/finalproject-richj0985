@@ -17,6 +17,7 @@ import javax.swing.JFrame;
 
 import java.awt.Image;
 import java.awt.image.BufferedImage;
+import static java.awt.image.ImageObserver.ERROR;
 import java.io.*;
 import javax.imageio.*;
 
@@ -271,7 +272,12 @@ public class SoccerFootFight extends JComponent implements KeyListener {
             g.setColor(Color.BLACK);
             g.drawLine(player.x + 40 - 22, player.y - 40 + 80, player.x + 40 - 22, player.y - 40 + 80);
         }
-    
+        
+            g.setColor(Color.RED);
+            g.fillRect(50, 20, player2.powerKickCount / 2 / 2, 50);
+            g.fillRect(650, 20, player1.powerKickCount / 2 / 2, 50);
+            g.drawRect(50, 20, 600 / 2, 50);
+            g.drawRect(650, 20, 600 / 2, 50);
         //Debug - draw rectangles for objects
         //g.drawRect(player.x, player.y, player.width / 3, player.height / 3);
         //g.drawRect(player.x, player.y, player.width, player.height);
@@ -612,15 +618,15 @@ public class SoccerFootFight extends JComponent implements KeyListener {
         if ( player1.intersects(player2) ) {
             if(player2.y > player1.y){
                 if ( player1.x > player2.x) { 
-                     player1.x += 2;
+                     player1.x += 10;
                 } else {
-                     player1.x -= 2;               
+                     player1.x -= 10;               
                 }
             }else if(player1.y > player2.y){
-                if ( player1.x > player2.x) { 
-                     player1.x += 2;
+                if ( player2.x > player2.x) { 
+                     player2.x += 10;
                 } else {
-                     player1.x -= 2;               
+                     player2.x -= 10;               
                 }
             }
         }
@@ -712,20 +718,23 @@ public class SoccerFootFight extends JComponent implements KeyListener {
             // ball has been kicked, set it's speed and direction
             ball.speed = player.direction * BALL_SPEED;
             ball.x += ball.speed;
-            if(player.powerKickCount == 600){
-                ball.dy = 20;
-                ball.speed = player.direction * 50;
-                player.powerKickCount = 0;
-            }else{
-
-                // set the power of the kick based on random value
-                ball.dy = (int) (Math.random() * (12 - 5 + 1) + 5) * BALL_DY_MULTIPLIER;
-            }
+            // set the power of the kick based on random value
+            ball.dy = (int) (Math.random() * (12 - 5 + 1) + 5) * BALL_DY_MULTIPLIER;
             // play sound to indicate the ball has been kicked
             soundBallKicked.Start();
             
+        } else if (player.powerKick && playerFootRect.intersects(ball) && player.powerKickCount == 1200){
+            // ball has been kicked, set it's speed and direction
+            ball.speed = player.direction * BALL_SPEED;
+            ball.x += ball.speed;
+            ball.dy = 15;
+            ball.speed = player.direction * 40;
+            player.powerKickCount = 0;
+            // play sound to indicate the ball has been kicked
+            soundBallKicked.Start();
         }
-        if (player.kick) {
+        
+        if (player.kick || player.powerKick) {
             if (player.x + player.width / 2 <= ball.x) {
                 player.foot2X = 15;
                 player.foot2Y = - 5;
@@ -739,7 +748,7 @@ public class SoccerFootFight extends JComponent implements KeyListener {
             player.foot2X = 0;
             player.foot2Y = 0;
         }
-        if(player.powerKickCount < 600){
+        if(player.powerKickCount < 1200){
             player.powerKickCount = player.powerKickCount + 1;
         }
     }
@@ -1074,7 +1083,8 @@ public class SoccerFootFight extends JComponent implements KeyListener {
                 player1.jump = true;
             } else if (key == KeyEvent.VK_SPACE) {
                 player1.kick = true;
-            
+            } else if (key == KeyEvent.VK_ENTER){
+                player1.powerKick = true;
             // Player 2 key controls
             } else if (key == KeyEvent.VK_A) {
                 player2.left = true;
@@ -1084,6 +1094,8 @@ public class SoccerFootFight extends JComponent implements KeyListener {
                 player2.jump = true;
             } else if (key == KeyEvent.VK_SHIFT) {
                 player2.kick = true;
+            } else if (key == KeyEvent.VK_X){
+                player2.powerKick = true;
             }
         }
  
@@ -1125,7 +1137,8 @@ public class SoccerFootFight extends JComponent implements KeyListener {
                 player1.jump = false;
             } else if (key == KeyEvent.VK_SPACE) {
                 player1.kick = false;
-
+            } else if (key == KeyEvent.VK_ENTER){
+                player1.powerKick = false;
             // Player2 Key Controls 
             } else if (key == KeyEvent.VK_A) {
                 player2.left = false;
@@ -1135,6 +1148,8 @@ public class SoccerFootFight extends JComponent implements KeyListener {
                 player2.jump = false;
             } else if (key == KeyEvent.VK_SHIFT) {
                 player2.kick = false;
+            } else if (key == KeyEvent.VK_X){
+                player2.powerKick = false;
             }
         }
     }
