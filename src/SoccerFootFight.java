@@ -54,9 +54,9 @@ public class SoccerFootFight extends JComponent implements KeyListener {
     BufferedImage imgSoccerField            = loadImage("Soccer Field.png");
     BufferedImage imgHomeScreen             = loadImage("soccer game home screen.jpg");
     BufferedImage imgInstructionsBackground = loadImage("soccer game writing screen.jpg");
-    BufferedImage imgControls               = loadImage("controls1.jpg");
+    BufferedImage imgControls               = loadImage("controls2.jpg");
     BufferedImage imgSpaceBar               = loadImage("space bar1.jpg");
-    BufferedImage imgWasDGame               = loadImage("wasdgame.jpg");
+    BufferedImage imgWasDGame               = loadImage("wasdgame2.jpg");
     BufferedImage imgShiftControls          = loadImage("shift.jpg");
     BufferedImage imgEndGame                = loadImage("END.jpg");
     BufferedImage[] imgBallImages;
@@ -272,12 +272,19 @@ public class SoccerFootFight extends JComponent implements KeyListener {
             g.setColor(Color.BLACK);
             g.drawLine(player.x + 40 - 22, player.y - 40 + 80, player.x + 40 - 22, player.y - 40 + 80);
         }
-        
-            g.setColor(Color.RED);
-            g.fillRect(50, 20, player2.powerKickCount / 2 / 2, 50);
-            g.fillRect(650, 20, player1.powerKickCount / 2 / 2, 50);
-            g.drawRect(50, 20, 600 / 2, 50);
-            g.drawRect(650, 20, 600 / 2, 50);
+
+        // powerKick power drawings
+        g.setColor(Color.RED);
+        g.fillRect(50, 20, player2.powerKickCount / 2 / 2, 50);
+        g.fillRect(650, 20, player1.powerKickCount / 2 / 2, 50);
+        g.setColor(Color.BLUE);
+        g.drawRect(50, 20, 600 / 2, 50);
+        g.drawRect(650, 20, 600 / 2, 50);
+        Font powerFont = new Font("Impact", Font.BOLD, 50);
+        g.setFont(powerFont);
+        g.setColor(Color.WHITE);
+        g.drawString("POWER", 115, 65);
+        g.drawString("POWER", 715, 65);
         //Debug - draw rectangles for objects
         //g.drawRect(player.x, player.y, player.width / 3, player.height / 3);
         //g.drawRect(player.x, player.y, player.width, player.height);
@@ -491,7 +498,7 @@ public class SoccerFootFight extends JComponent implements KeyListener {
             g.drawString("      1. The clock starts to count down from 3 minutes to indicate the amount of time left in the match.", WIDTH / 2 - 500, 100 + 20 + 60);
             g.drawString("      2. Players start at opposite sides of the field. Player 1 starts on the right and Player 2 on the left.", WIDTH / 2 - 500, 100 + 20 + 80);
             g.drawString("      3. The ball is located at the centre of the field.", WIDTH / 2 - 500, 100 + 20 + 100);
-            g.drawString("      4. Players compete to put the ball in the oppositing net.", WIDTH / 2 - 500, 100 + 20 + 120);
+            g.drawString("      4. Players compete score by shooting the ball in the oppositing net using the types of kicks or their body.", WIDTH / 2 - 500, 100 + 20 + 120);
             g.drawString("      5. If a Player scores, the ball and the players reset at the centre.", WIDTH / 2 - 500, 100 + 20 + 140);
             g.drawString("      6. The Player with the most goals by the end of the time wins!", WIDTH / 2 - 500, 100 + 20 + 160);
             g.drawString("      (Controls can be viewed in the control section)", WIDTH / 2 - 500, 100 + 20 + 180);
@@ -1083,7 +1090,7 @@ public class SoccerFootFight extends JComponent implements KeyListener {
                 player1.jump = true;
             } else if (key == KeyEvent.VK_SPACE) {
                 player1.kick = true;
-            } else if (key == KeyEvent.VK_ENTER){
+            } else if (key == KeyEvent.VK_DOWN){
                 player1.powerKick = true;
             // Player 2 key controls
             } else if (key == KeyEvent.VK_A) {
@@ -1094,7 +1101,7 @@ public class SoccerFootFight extends JComponent implements KeyListener {
                 player2.jump = true;
             } else if (key == KeyEvent.VK_SHIFT) {
                 player2.kick = true;
-            } else if (key == KeyEvent.VK_X){
+            } else if (key == KeyEvent.VK_S){
                 player2.powerKick = true;
             }
         }
@@ -1137,7 +1144,7 @@ public class SoccerFootFight extends JComponent implements KeyListener {
                 player1.jump = false;
             } else if (key == KeyEvent.VK_SPACE) {
                 player1.kick = false;
-            } else if (key == KeyEvent.VK_ENTER){
+            } else if (key == KeyEvent.VK_DOWN){
                 player1.powerKick = false;
             // Player2 Key Controls 
             } else if (key == KeyEvent.VK_A) {
@@ -1148,7 +1155,7 @@ public class SoccerFootFight extends JComponent implements KeyListener {
                 player2.jump = false;
             } else if (key == KeyEvent.VK_SHIFT) {
                 player2.kick = false;
-            } else if (key == KeyEvent.VK_X){
+            } else if (key == KeyEvent.VK_S){
                 player2.powerKick = false;
             }
         }
