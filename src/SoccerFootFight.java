@@ -301,6 +301,7 @@ public class SoccerFootFight extends JComponent implements KeyListener {
         Font powerFont = new Font("Impact", Font.BOLD, 50);
         g.setFont(powerFont);
         g.setColor(Color.WHITE);
+        // power writing
         g.drawString("POWER", 115, 65);
         g.drawString("POWER", 715, 65);
         //Debug - draw rectangles for objects
