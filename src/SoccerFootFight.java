@@ -127,7 +127,7 @@ public class SoccerFootFight extends JComponent implements KeyListener {
         try {
             img = ImageIO.read(new File(file));
         } catch (IOException e) {
-            System.out.println("bad file");
+            
         }
         return img;
     }
@@ -811,10 +811,8 @@ public class SoccerFootFight extends JComponent implements KeyListener {
             // reduce the size of the bounce by 40%
             // set gravity strength back to zero to allow the ball to begin to 
             // bounce up. 
-            System.out.println(ball.dy);
             ball.dy -= (float) ball.dy * .20;
             ball.gravity = 0;
-            System.out.println(ball.dy);
             
             // provided the ball is going to bounce then play a bounce sound
             if ( ball.dy != 0 ) {
@@ -927,7 +925,6 @@ public class SoccerFootFight extends JComponent implements KeyListener {
             if(gameMode == GAME_MODE_START){
                 if(introTime > 0){
                     introTime --;
-                    System.out.println(introTime);
                 }else{
                     gameMode = GAME_MODE_MAIN_MENU;
                 }
@@ -978,7 +975,6 @@ public class SoccerFootFight extends JComponent implements KeyListener {
                 seconds = (int)(MATCH_TIME_SECONDS - elapsedTime/1000);
                 minutes = seconds/60;
                 seconds = seconds - 60*minutes;
-                System.out.println("player1: " + player1.powerKickCount + " player2: " + player2.powerKickCount);
                 // determine if soccer match time has expired
                 if ( minutes <= 0 && seconds <= 0 ) {
                     // Determine if the game has just ended, 
