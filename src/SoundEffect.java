@@ -1,6 +1,8 @@
-
-
-
+/*
+ * SoccerEffect - used to load and play .WAV files
+ * 
+ * @author richj0985
+ */
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -10,11 +12,6 @@ import javax.sound.sampled.Clip;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
-/*
- * SoccerEffect - used to load and play .WAV files
- * 
- * @author richj0985
- */
 public class SoundEffect {
 
       Clip clip;
